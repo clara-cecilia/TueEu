@@ -110,12 +110,7 @@ h2 {
 }
 
 .container a {
-  color: #efefef;
-  text-decoration: none;
-}
-
-.container a:hover {
-  text-decoration: underline;
+  color: #a9a9a6;
 }
 
 button {
