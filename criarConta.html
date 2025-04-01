@@ -1,5 +1,41 @@
-<link rel="stylesheet" href="stylecadastro.css">
+<!DOCTYPE html>
+   <html lang="pt-br">
 
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CADASTRO - TU & EU</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        form{
+            color: aliceblue;
+        }
+        label{
+            font-weight: bold;
+            width: 60%;
+
+        }
+        input,#estado {
+            width: 72%;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 10px; /* Torna as bordas arredondadas */
+            font-size: 15px; /* Aumenta o tamanho do texto */
+        }
+
+        .sexo {
+            margin: 0;
+            width: 15px; 
+            height: 15px;
+            gap: 15px;
+        }
+
+        p{
+            color: #fff;
+        }
+
+    </style>
+</head>
 <body>
     <div class="container">
         <div>
@@ -12,14 +48,14 @@
             </div><br>
 
             <div>
-            <label for="sexo">Sexo:</label>
-            <input type="radio" name="sexo" id="masculino" value="Masculino" checked>Masculino
-            <input type="radio" name="sexo" id="feminino" value="Feminino">Feminino
+            <label class="sexo" for="sexo">Sexo:</label>
+            <input class="sexo" type="radio" name="sexo" id="masculino" value="Masculino" checked>Masculino
+            <input class="sexo" type="radio" name="sexo" id="feminino" value="Feminino">Feminino
             </div><br>
 
             <div>
                 <label for="cpf">CPF</label>
-                <input type="cpf" id="cpf" name="cpf" placeholder="Somente números" required>
+                <input type="cpf" id="cpf" name="cpf" placeholder="Somente números" maxlength="11" required>
             </div><br>
 
             <div>
@@ -83,7 +119,7 @@
         
                 <div>
                     <label for="cep">CEP</label>
-                    <input type="text" id="cep" name="cep" placeholder="Digite seu CEP" required>
+                    <input type="text" id="cep" name="cep" placeholder="Digite seu CEP" maxlength="8" required>
                 </div><br>
         
                 <div>
@@ -104,7 +140,7 @@
             </div><br>
             <div>
                 <button type="submit" value="Cadastrar">Cadastrar</button>
-            </div>
+            </div><br>
         </form>
         </div>
         <p>Já tem cadastro? <a href="login.html">Login</a></p>
