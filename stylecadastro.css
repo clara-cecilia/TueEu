@@ -1,5 +1,38 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@200;300;400;500;600;700&display=swap");
 
+:root {
+    --header-height: 3.5rem;
+
+    /*Color mode HSL(hue, saturation, lightness)*/
+    --first-color: hsl(266, 97%, 15%);
+    --title-color: hsl(0, 0%, 5%);
+    --text-color: hsl(230, 12%, 40%);
+    --body-color: hsl(230, 100%, 98%);
+    --container-color: hsl(230, 100%, 97%);
+    --border-color: hsl(230, 25%, 80%);
+
+
+    --body-font: "Syne", sans-serif;
+    --h2-font-size: 1.25rem;
+    --normal-font-size: .938rem;
+
+    /*========== Font ==========*/
+    --font-regular: 400;
+    --font-medium: 500;
+    --font-semi-bold: 600;
+
+    /*========== z index ==========*/
+    --z-fixed: 100;
+    --z-modal: 1000;
+}
+
+@media screen and (min-width: 1023px) {
+    :root {
+        --h2-font-size: 1.5rem;
+        --normal-font-size: 1rem;
+    }
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -14,7 +47,7 @@ body {
     min-height: 100vh;
     width: 100%;
     padding: 0 10px;
-    background-image: url(img/wallpaperant.png);
+    background-image: url(img/wallpaperants.png);
     background-size: cover;
     background-repeat: no-repeat;
 }

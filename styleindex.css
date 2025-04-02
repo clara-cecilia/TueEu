@@ -1,26 +1,23 @@
 /*=============== GOOGLE FONTS ===============*/
 @import url("https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600&display=swap");
 
-/*=============== VARIABLES CSS ===============*/
 :root {
     --header-height: 3.5rem;
 
-    /*========== Colors ==========*/
     /*Color mode HSL(hue, saturation, lightness)*/
-    --first-color: hsl(230, 75%, 56%);
-    --title-color: hsl(230, 75%, 15%);
+    --first-color: hsl(266, 97%, 15%);
+    --title-color: hsl(0, 0%, 5%);
     --text-color: hsl(230, 12%, 40%);
     --body-color: hsl(230, 100%, 98%);
     --container-color: hsl(230, 100%, 97%);
     --border-color: hsl(230, 25%, 80%);
 
-    /*========== Font and typography ==========*/
-    /*.5rem = 8px | 1rem = 16px ...*/
+
     --body-font: "Syne", sans-serif;
     --h2-font-size: 1.25rem;
     --normal-font-size: .938rem;
 
-    /*========== Font weight ==========*/
+    /*========== Font ==========*/
     --font-regular: 400;
     --font-medium: 500;
     --font-semi-bold: 600;
@@ -30,14 +27,12 @@
     --z-modal: 1000;
 }
 
-/*========== Responsive typography ==========*/
 @media screen and (min-width: 1023px) {
     :root {
         --h2-font-size: 1.5rem;
         --normal-font-size: 1rem;
     }
 }
-
 /*=============== BASE ===============*/
 * {
     box-sizing: border-box;
@@ -59,6 +54,15 @@ button {
 body {
     background-color: var(--body-color);
     color: var(--text-color);
+    background-image: url(img/wallpaperants.png);
+}
+
+h1 {
+    height: 50px;
+    width: auto;
+    text-align: left;
+    font-family:"Syne", sans-serif;
+    color: rgb(58, 58, 58);
 }
 
 input,
@@ -78,10 +82,10 @@ a {
 img {
     display: block;
     max-width: 100%;
-    height: auto; /* Changed height to auto for better responsiveness */
+    height: auto;
 }
 
-/*=============== REUSABLE CSS CLASSES ===============*/
+/*=============== CSS CLASSES ===============*/
 .container {
     max-width: 1120px;
     margin-inline: 1.5rem;
@@ -103,7 +107,6 @@ img {
     z-index: -1;
 }
 
-.search,
 .login {
     position: fixed;
     left: 0;
@@ -113,14 +116,13 @@ img {
     z-index: var(--z-modal);
     background-color: hsla(230, 75%, 15%, .1);
     backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px); /* For safari */
+    -webkit-backdrop-filter: blur(24px); 
     padding: 8rem 1.5rem 0;
     opacity: 0;
     pointer-events: none;
     transition: opacity .4s;
 }
 
-.search__close,
 .login__close {
     position: absolute;
     top: 2rem;
@@ -144,28 +146,24 @@ img {
 .nav {
     height: var(--header-height);
     display: flex;
-    justify-content: space-between; /* Keep space between logo and actions */
+    justify-content: space-between; 
     align-items: center;
-    padding-left: 20px; /* Adiciona espaço à esquerda de todo o conteúdo da nav */
-    padding-right: 20px; /* Adiciona espaço à direita */
-    /* padding-top: 10px; /* Adiciona espaço no topo */
-    /* padding-bottom: 10px; /* Adiciona espaço na parte inferior */
+    padding-left: 20px; 
+    padding-right: 20px; 
 }
 
 .nav__logo {
+    display: flex;
+    align-items: center;
     color: var(--title-color);
     font-weight: var(--font-semi-bold);
     transition: color .4s;
-    margin-top: 10px; /* Desloca a logo para baixo */
-    margin-bottom: 10px; /* Adiciona espaço abaixo da logo */
 }
 
 .nav__logo img {
-    display: block;
-    max-width: 100%;
-    height: auto; /* Mantém a proporção */
-    height: 120px; /* Aumenta a altura para 60 pixels */
-    /* width: 120px; /* Se quiser uma largura específica (pode deformar se não proporcional) */
+    max-width: 100px;
+    height: auto;
+    margin-right: 15px;
 }
 
 .nav__menu {
@@ -178,7 +176,7 @@ img {
         top: -100%;
         left: 0;
         background-color: var(--body-color);
-        box-shadow: 0 8px 16px hsla(230, 75%, 32%, .15);
+        box-shadow: 0 8px 16px hsla(268, 100%, 21%, 0.15);
         width: 100%;
         padding-block: 4.5rem 4rem;
         transition: top .4s;
@@ -198,28 +196,6 @@ img {
     transition: color .4s;
 }
 
-.nav__close {
-    position: absolute;
-    top: 1.15rem;
-    right: 1.5rem;
-}
-
-.nav__actions {
-    display: flex;
-    align-items: center;
-    column-gap: 1rem;
-}
-
-.nav__search,
-.nav__login,
-.nav__toggle,
-.nav__close {
-    font-size: 1.25rem;
-    color: var(--title-color);
-    cursor: pointer;
-    transition: color .4s;
-}
-
 :is(.nav__logo, .nav__search, .nav__login, .nav__toggle, .nav__link):hover {
     color: var(--first-color);
 }
@@ -227,45 +203,6 @@ img {
 /* Show menu */
 .show-menu {
     top: 0;
-}
-
-/*=============== SEARCH ===============*/
-.search__form {
-    display: flex;
-    align-items: center;
-    column-gap: .5rem;
-    background-color: var(--container-color);
-    box-shadow: 0 8px 32px hsla(230, 75%, 15%, .2);
-    padding-inline: 1rem;
-    border-radius: .5rem;
-    transform: translateY(-1rem);
-    transition: transform .4s;
-}
-
-.search__icon {
-    font-size: 1.25rem;
-    color: var(--title-color);
-}
-
-.search__input {
-    width: 100%;
-    padding-block: 1rem;
-    background-color: var(--container-color);
-    color: var(--text-color);
-}
-
-.search__input::placeholder {
-    color: var(--text-color);
-}
-
-/* Show search */
-.show-search {
-    opacity: 1;
-    pointer-events: initial;
-}
-
-.show-search .search__form {
-    transform: translateY(0);
 }
 
 /*=============== LOGIN ===============*/
@@ -342,10 +279,9 @@ img {
 }
 
 .login__button:hover {
-    box-shadow: 0 4px 24px hsla(230, 75%, 40%, .4);
+    box-shadow: 0 4px 24px hsla(0, 0%, 100%, 0.4);
 }
 
-/* Show login */
 .show-login {
     opacity: 1;
     pointer-events: initial;
@@ -356,7 +292,6 @@ img {
 }
 
 /*=============== BREAKPOINTS ===============*/
-/* For medium devices */
 @media screen and (min-width: 576px) {
     .search,
     .login {
@@ -384,7 +319,7 @@ img {
     }
 }
 
-/* For large devices */
+
 @media screen and (min-width: 1023px) {
     .nav {
         height: calc(var(--header-height) + 2rem);
@@ -395,7 +330,7 @@ img {
         display: none;
     }
     .nav__menu {
-        margin-left: auto; /* Push the menu to the right */
+        margin-left: auto; 
     }
     .nav__list {
         flex-direction: row;
