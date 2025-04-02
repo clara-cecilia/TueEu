@@ -41,7 +41,7 @@
         <div>
             <h1>Cadastre-se</h1>
 
-        <form action="cadastro.py" method="post">
+        <form action="" method="post" id="login" >
             <div>
                 <label for="nome">Nome</label>
                 <input type="nome" id="nome" name="nome" placeholder="Nome completo" required>
@@ -145,6 +145,16 @@
         </div>
         <p>Já tem cadastro? <a href="login.html">Login</a></p>
     </div>
+
+   <script>
+    document.getElementById('login').addEventListener('submit', function(mensagem){
+        event.preventDefault();
+        alert('Cadastro realizado com sucesso!');
+
+        window.location.href = 'login.html';
+
+    })
+</script>
 
 </body>
 </html>
