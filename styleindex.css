@@ -65,6 +65,12 @@ h1 {
     color: rgb(58, 58, 58);
 }
 
+marquee {
+    color: black;
+    font-family:"Syne", sans-serif;
+    font-size: 22px;
+}
+
 input,
 button {
     border: none;
