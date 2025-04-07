@@ -72,7 +72,9 @@ def cadastrar():
     db.commit()
     cursor.close()
     return redirect('/')
-
+#
+# pagina de login
+#
 @app.route('/logar', methods=['POST'])
 def logar():
     email = request.form['email']
@@ -89,8 +91,13 @@ def logar():
         # Verifica se a senha fornecida corresponde ao hash
         if checkpw(senha.encode('utf-8'), senha_armazenada.encode('utf-8')):
             session['usuario'] = usuario['nome']  # Salva o nome do usuário na sessão
-            flash('Login realizado com sucesso!')
-            return redirect(url_for('home'))
+            session['is_admin'] = usuario['is_admin']
+
+            if usuario['is_admin'] ==1:
+                flash('Login realizado como administrator!')
+                return redirect(url_for('admin'))
+            else:
+                return redirect(url_for('home'))
         else:
             flash('Senha incorreta.')  # Senha inválida
     else:
@@ -133,7 +140,9 @@ def editarDados():
     cursor.close()
 
     return render_template('editarDados.html', usuario=usuario)
-
+#
+# usuario excluir a conta
+#
 @app.route('/excluir-conta', methods=['POST'])
 def excluirConta():
     if 'usuario' in session:
@@ -160,12 +169,38 @@ def excluirConta():
             return redirect(url_for('home'))
     else:
         return redirect(url_for('login'))
+    
+# Pagina do administrador 
+
+# Ver usuarios
+@app.route('/admin', methods=['GET'])
+def admin():
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM usuario")
+    usuarios = cursor.fetchall()
+
+    return render_template('admin.html', usuarios=usuarios)
+
+#adm excluir usuarios
+@app.route('/admin/excluir/<int:id>', methods=['POST'])
+def excluir_usuario(id):
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM usuario WHERE id = %s",(id,))
+    db.commit()
+
+    flash('Usuário excluído com sucesso!')
+    return redirect(url_for('admin'))
+
+#adm editar usuarios
+
 
 @app.route('/logout')
 def logout():
     session.pop('usuario', None)
     flash('Você saiu do sistema.')
     return redirect(url_for('login'))
+
+
 
 
 if __name__ == '__main__':
