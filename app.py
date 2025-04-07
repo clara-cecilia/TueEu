@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import mysql.connector
+from bcrypt import hashpw, gensalt , checkpw
 
 app = Flask(__name__)
 app.secret_key = 'chave_secreta' # Necessária para usar sessões
@@ -8,7 +9,7 @@ try:
     db = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="2904", 
+        password="280697", 
         port='3306',
         database="cadastro_tueeu"
     )
@@ -54,6 +55,12 @@ def cadastrar():
         request.form['senha']
     )
 
+        # Criptografa a senha antes de salvar
+    senha_criptografada = hashpw(dados[-1].encode('utf-8'), gensalt())
+    
+    # Substitui a senha original pela senha criptografada
+    dados = (*dados[:-1], senha_criptografada)
+
     sql = '''
     INSERT INTO usuario (
         nome, sexo, cpf, data_nasc, telefone, pais, estado, cidade,
@@ -71,17 +78,25 @@ def logar():
     email = request.form['email']
     senha = request.form['senha']
 
-    cursor = db.cursor()
-    cursor.execute("SELECT * FROM usuario WHERE email = %s AND senha = %s", (email, senha))
+    cursor = db.cursor(dictionary=True)    
+    cursor.execute("SELECT * FROM usuario WHERE email = %s", (email,))
     usuario = cursor.fetchone()
 
     if usuario:
-        session['usuario'] = usuario[1]  # salva o nome do usuário na sessão
-        flash('Login realizado com sucesso!')
-        return redirect(url_for('home'))
+        # Recupera o hash da senha armazenado no banco
+        senha_armazenada = usuario['senha']
+        
+        # Verifica se a senha fornecida corresponde ao hash
+        if checkpw(senha.encode('utf-8'), senha_armazenada.encode('utf-8')):
+            session['usuario'] = usuario['nome']  # Salva o nome do usuário na sessão
+            flash('Login realizado com sucesso!')
+            return redirect(url_for('home'))
+        else:
+            flash('Senha incorreta.')  # Senha inválida
     else:
-        flash('E-mail ou senha inválidos.')
-        return redirect(url_for('login'))
+        flash('E-mail não encontrado.')  # Email não existe no banco
+
+    return redirect(url_for('login'))  # Redireciona para a página de login em caso de falha
     
 @app.route('/home')
 def home():
