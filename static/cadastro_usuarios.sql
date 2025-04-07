@@ -1,26 +1,24 @@
 CREATE SCHEMA `cadastro_TueEu` ;
 use cadastro_Tueeu;
-CREATE TABLE `cadastro_tueeu`.`usuario` (
-  `idUsuario` INT NOT NULL AUTO_INCREMENT,
-  `nome` VARCHAR(100) NOT NULL,
-  `sexo` VARCHAR(10) NOT NULL,
-  `cpf` INT NOT NULL,
-  `data_nasc` DATE NOT NULL,
-  `telefone` INT NOT NULL,
-  `pais` VARCHAR(20) NOT NULL,
-  `estado` VARCHAR(2) NOT NULL,
-  `cidade` VARCHAR(30) NOT NULL,
-  `bairro` VARCHAR(45) NOT NULL,
-  `cep` INT NOT NULL,
-  `endereço` VARCHAR(255) NOT NULL,
-  `email` VARCHAR(105) NOT NULL,
-  `senha` VARCHAR(50) NOT NULL,
-  PRIMARY KEY (`idUsuario`));
   
-  ALTER TABLE usuario
-MODIFY COLUMN cpf VARCHAR(11),
-MODIFY COLUMN telefone VARCHAR(11),
-MODIFY COLUMN cep VARCHAR(8);
+CREATE TABLE `usuario` (
+   `idUsuario` int NOT NULL AUTO_INCREMENT,
+   `nome` varchar(100) NOT NULL,
+   `sexo` varchar(10) NOT NULL,
+   `cpf` varchar(11) DEFAULT NULL,
+   `data_nasc` date NOT NULL,
+   `telefone` varchar(11) DEFAULT NULL,
+   `pais` varchar(20) NOT NULL,
+   `estado` varchar(2) NOT NULL,
+   `cidade` varchar(30) NOT NULL,
+   `bairro` varchar(45) NOT NULL,
+   `cep` varchar(8) DEFAULT NULL,
+   `endereco` varchar(255) DEFAULT NULL,
+   `email` varchar(105) NOT NULL,
+   `senha` varchar(50) NOT NULL,
+   PRIMARY KEY (`idUsuario`),
+   UNIQUE KEY `email_unico` (`email`),
+   UNIQUE KEY `cpf_unico` (`cpf`)
+ ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
 select * from usuario;
-
