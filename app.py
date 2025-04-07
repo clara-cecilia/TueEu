@@ -117,8 +117,12 @@ def editarDados():
         novo_email = request.form['email']
         nova_senha = request.form['senha']
 
+        # Criptografa a nova senha antes de atualizar no banco
+        nova_senha_criptografada = hashpw(nova_senha.encode('utf-8'), gensalt())
+
+        # Atualiza o email e a senha no banco de dados
         cursor.execute("UPDATE usuario SET email = %s, senha = %s WHERE nome = %s", 
-                       (novo_email, nova_senha, session['usuario']))
+                       (novo_email, nova_senha_criptografada.decode('utf-8'), session['usuario']))
         db.commit()
         flash('Dados atualizados com sucesso.')
         return redirect(url_for('home'))
