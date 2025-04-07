@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+   <html lang="pt-br">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="{{ url_for('static', filename='styleindex.css') }}">
+      <link rel="icon" type="image/png" href="{{ url_for('static', filename='/img/tueeuicon2.ico') }}">
+      <link rel="stylesheet" href="https://public.codepenassets.com/css/normalize-5.0.0.min.css">
+
+      <title>Tu & Eu</title>
+   </head>
+   <body>
+      <!--==================== HEADER ====================-->
+      <header class="header" id="header">
+         <nav class="nav container">
+            <a href="{{ url_for('index') }}" class="nav__logo">
+               <img src="{{ url_for('static', filename='img/logotueeu.png') }}" alt="Logo">
+            </a>
+            
+            <div>
+               <marquee direction="left">
+                  Conectando talentos, trocando serviços!
+               </marquee>
+            </div>
+            <div class="nav__menu" id="nav-menu">
+               <ul class="nav__list">
+                  <li class="nav__item">
+                     <a href="#" class="nav__link">Início</a>
+                  </li>
+
+                  <li class="nav__item">
+                     <a href="#" class="nav__link">Sobre nós</a>
+                  </li>
+
+                  <li class="nav__item">
+                     <a href="#" class="nav__link">Serviços</a>
+                  </li>
+               </ul>
+            </div>
+            <a href="{{ url_for('login') }}"><button type="submit" class="login__button">Login</button></a>
+         </form>
+   </body>
+</html>
