@@ -59,7 +59,7 @@
                             <form action="/admin/excluir/{{usuario['id']}}" method="POST" style="display: inline;">
                                 <button type="submit" onclick="return confirm('Tem certeza que deseja excluir este usuário?')">excluir</button>
                             </form>
-                            <a href="/admin/editar/{{usuario['id']}}" class="btn-edit">Editar</a>
+                            <a href="/admin/editar/{{usuario['id']}}" class="btn-warning">Editar</a>
                         </td>
                     </tr>
                     {% endfor %}
