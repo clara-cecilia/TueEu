@@ -3,8 +3,8 @@
    <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <link rel="stylesheet" href="{{ url_for('static', filename='styleindex.css') }}">
-      <link rel="icon" type="image/png" href="{{ url_for('static', filename='/img/tueeuicon2.ico') }}">
+      <link rel="stylesheet" href="/static/styleindex.css">
+      <link rel="icon" type="image/png" href="/static/img/tueeulogoicon.ico">
       <link rel="stylesheet" href="https://public.codepenassets.com/css/normalize-5.0.0.min.css">
 
       <title>Tu & Eu</title>
@@ -13,8 +13,8 @@
       <!--==================== HEADER ====================-->
       <header class="header" id="header">
          <nav class="nav container">
-            <a href="{{ url_for('index') }}" class="nav__logo">
-               <img src="{{ url_for('static', filename='img/logotueeu.png') }}" alt="Logo">
+            <a href="/templates/index.html" class="nav__logo">
+               <img src="/static/img/logotueeu.png" alt="Logo">
             </a>
             
             <div>
@@ -37,7 +37,7 @@
                   </li>
                </ul>
             </div>
-            <a href="{{ url_for('login') }}"><button type="submit" class="login__button">Login</button></a>
+            <a href="/templates/login.html"><button type="submit" class="login__button">Login</button></a>
          </form>
    </body>
 </html>

@@ -5,36 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CADASTRO - TU & EU</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        form{
-            color: aliceblue;
-        }
-        label{
-            font-weight: bold;
-            width: 60%;
-
-        }
-        input,#estado {
-            width: 72%;
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 10px; /* Torna as bordas arredondadas */
-            font-size: 15px; /* Aumenta o tamanho do texto */
-        }
-
-        .sexo {
-            margin: 0;
-            width: 15px; 
-            height: 15px;
-            gap: 15px;
-        }
-
-        p{
-            color: #fff;
-        }
-
-    </style>
+    <link rel="stylesheet" href="/static/stylecadastro.css">
 </head>
 <body>
     <div class="container">
@@ -55,7 +26,7 @@
 
             <div>
                 <label for="cpf">CPF</label>
-                <input type="cpf" id="cpf" name="cpf" placeholder="Somente números" maxlength="11" required>
+                <input type="cpf" id="cpf" name="cpf" placeholder="Somente números" maxlength="16" required>
             </div><br>
 
             <div>
@@ -143,7 +114,7 @@
             </div><br>
         </form>
         </div>
-        <p>Já tem cadastro? <a href="{{ url_for('login') }}">Login</a></p>
+        <p>Já tem cadastro? <a href="/templates/login.html">Login</a></p>
     </div>
 
 
