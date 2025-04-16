@@ -19,6 +19,6 @@ CREATE TABLE usuario (
 
 ALTER TABLE usuario 
 ADD is_admin TINYINT DEFAULT 0;
-ADD COLUMN reset_code VARCHAR(255),
-ADD COLUMN reset_code_expiration DATETIME;
+ADD reset_code VARCHAR(64),
+ADD reset_code_expiration DATETIME;
 

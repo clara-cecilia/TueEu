@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Redefinir Senha</title>
+</head>
+<body>
+    <h2>Redefinir Senha</h2>
+    <form id="verificarCodigoForm">
+        <input type="email" id="email" placeholder="Seu e-mail" required><br>
+        <input type="text" id="codigo" placeholder="Código recebido" required><br>
+        <input type="password" id="novaSenha" placeholder="Nova senha" required><br>
+        <button type="submit">Redefinir</button>
+    </form>
+
+    <script>
+    document.getElementById("verificarCodigoForm").addEventListener("submit", async function(e) {
+        e.preventDefault();
+        const email = document.getElementById("email").value;
+        const codigo = document.getElementById("codigo").value;
+        const novaSenha = document.getElementById("novaSenha").value;
+
+        const response = await fetch("/redefinir-senha", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                email: email,
+                reset_code: codigo,
+                nova_senha: novaSenha
+            })
+        });
+        const result = await response.json();
+        alert(result.message || result.error);
+    });
+    </script>
+</body>
+</html>

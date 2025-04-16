@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Recuperar Senha</title>
+</head>
+<body>
+    <h2>Recuperar Senha</h2>
+    <p>Digite seu e-mail para receber um código de redefinição.</p>
+    <form id="recuperarSenha">
+        <input type="email" id="email" required placeholder="Seu e-mail"><br>
+        <button type="submit">Enviar Código</button>
+    </form>
+
+    <script>
+    document.getElementById("recuperarSenha").addEventListener("submit", async function(e) {
+        e.preventDefault();
+        const email = document.getElementById("email").value;
+        const response = await fetch("/recuperar-senha", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email })
+        });
+        const result = await response.json();
+        alert(result.message || result.error);
+    });
+    </script>
+</body>
+</html>
