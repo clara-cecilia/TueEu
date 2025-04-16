@@ -26,13 +26,13 @@
                 <label>Insira a senha</label>
             </div>
             <div class="forget">
-                <a href="/templates/esqueceuSenha.html">Esqueceu sua senha?</a>
+                <a href="{{ url_for('esqueceuSenha') }}">Esqueceu sua senha?</a>
             </div>
 
             <button type="submit">Login</button>
 
             <div class="Create-account">
-                <p>Não tem uma conta? <a href="/templates/cadastro.html">Cadastre-se</a></p>
+                <p>Não tem uma conta? <a href="{{ url_for('cadastro') }}">Cadastre-se</a></p>
             </div>
         </form>
     </div>
