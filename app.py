@@ -1,20 +1,24 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import mysql.connector
 from bcrypt import hashpw, gensalt , checkpw
-import hashlib
+from functools import wraps
+from dotenv import load_dotenv #ler o arquivo .env
+
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = 'chave_secreta' # Necessária para usar sessões
+app.secret_key = os.environ.get('SECRET_KEY')
 #
 #conexão com banco de dados 
 #
 try:
     db = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="280697", 
-        port='3306',
-        database="cadastro_tueeu"
+        host=os.environ.get("DB_HOST"),
+        user=os.environ.get("DB_USER"),
+        password=os.environ.get("DB_PASSWORD"),
+        port=os.environ.get("DB_PORT"),
+        database=os.environ.get("DB_DATABASE")
     )
 
     print("Conexão realizada com sucesso!")
@@ -39,14 +43,25 @@ def cadastro():
 def esqueceuSenha():
     return render_template('esqueceuSenha.html')
 #
+# Verificador de Admin
+# coloque @verificarAdmin abaixo de @app.route
+#
+def verificarAdmin(f):
+    @wraps(f)
+    def decorador(*args, **kwargs):
+        if session.get('is_admin') != 1:
+            flash("Acesso negado: você não tem permissão para acessar esta área.")
+            return redirect(url_for('home'))
+        return f(*args, **kwargs)
+    return decorador
+
+
+#
 #cadastrar usuario no banco de dados 
 #
 @app.route('/cadastrar', methods=['POST'])
 def cadastrar():
     cursor = db.cursor()
-
-    email = request.form['email']
-    email_hash = hashlib.sha256(email.encode('utf-8')).hexdigest()
 
     dados = (
         request.form['nome'],
@@ -60,12 +75,13 @@ def cadastrar():
         request.form['bairro'],
         request.form['cep'],
         request.form['endereco'],
-        email_hash,
+        request.form['email'],
         request.form['senha']
     )
 
         # Criptografa a senha antes de salvar
-    senha_criptografada = hashpw(dados[-1].encode('utf-8'), gensalt())
+    senha_criptografada = hashpw(dados[-1].encode('utf-8'), gensalt()).decode('utf-8')
+
     
     # Substitui a senha original pela senha criptografada
     dados = (*dados[:-1], senha_criptografada)
@@ -183,6 +199,7 @@ def excluirConta():
 
 # Ver usuarios
 @app.route('/admin', methods=['GET'])
+@verificarAdmin
 def admin():
     cursor = db.cursor(dictionary=True)
     cursor.execute("SELECT * FROM usuario")
@@ -192,6 +209,7 @@ def admin():
 
 #adm excluir usuarios
 @app.route('/admin/excluir/<int:id>', methods=['POST'])
+@verificarAdmin
 def excluir_usuario(id):
     cursor = db.cursor()
     cursor.execute("DELETE FROM usuario WHERE id = %s",(id,))
@@ -202,6 +220,7 @@ def excluir_usuario(id):
 
 #adm editar usuarios
 @app.route('/admin/editar/<int:id>', methods=['GET','POST'])
+@verificarAdmin
 def editar_usuario(id):
     cursor = db.cursor(dictionary=True)
 
@@ -223,7 +242,7 @@ def editar_usuario(id):
             if nova_senha:
                 senha_criptografada = hashpw(nova_senha.encode('utf-8'), gensalt()).decode('utf-8')
             else:
-                cursor.execute("SELECT senha FROM usuario WHERE id = %s",(id))
+                cursor.execute("SELECT senha FROM usuario WHERE id = %s",(id,))
                 senha_criptografada = cursor.fetchone()['senha']
 
         
