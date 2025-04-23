@@ -1,24 +1,21 @@
-import os
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 import mysql.connector
 from bcrypt import hashpw, gensalt , checkpw
-from functools import wraps
-from dotenv import load_dotenv #ler o arquivo .env
-
-load_dotenv()
+import hashlib
+# from reset_utils import generate_reset_code, store_reset_code_in_db, send_reset_email, verify_reset_code, reset_password
 
 app = Flask(__name__)
-app.secret_key = os.environ.get('SECRET_KEY')
+app.secret_key = 'chave_secreta' # Necessária para usar sessões
 #
 #conexão com banco de dados 
 #
 try:
     db = mysql.connector.connect(
-        host=os.environ.get("DB_HOST"),
-        user=os.environ.get("DB_USER"),
-        password=os.environ.get("DB_PASSWORD"),
-        port=os.environ.get("DB_PORT"),
-        database=os.environ.get("DB_DATABASE")
+        host="localhost",
+        user="root",
+        password="280697", 
+        port='3306',
+        database="cadastro_tueeu"
     )
 
     print("Conexão realizada com sucesso!")
@@ -43,25 +40,14 @@ def cadastro():
 def esqueceuSenha():
     return render_template('esqueceuSenha.html')
 #
-# Verificador de Admin
-# coloque @verificarAdmin abaixo de @app.route
-#
-def verificarAdmin(f):
-    @wraps(f)
-    def decorador(*args, **kwargs):
-        if session.get('is_admin') != 1:
-            flash("Acesso negado: você não tem permissão para acessar esta área.")
-            return redirect(url_for('home'))
-        return f(*args, **kwargs)
-    return decorador
-
-
-#
 #cadastrar usuario no banco de dados 
 #
 @app.route('/cadastrar', methods=['POST'])
 def cadastrar():
     cursor = db.cursor()
+
+    email = request.form['email']
+    email_hash = hashlib.sha256(email.encode('utf-8')).hexdigest()
 
     dados = (
         request.form['nome'],
@@ -75,13 +61,12 @@ def cadastrar():
         request.form['bairro'],
         request.form['cep'],
         request.form['endereco'],
-        request.form['email'],
+        email_hash,
         request.form['senha']
     )
 
         # Criptografa a senha antes de salvar
-    senha_criptografada = hashpw(dados[-1].encode('utf-8'), gensalt()).decode('utf-8')
-
+    senha_criptografada = hashpw(dados[-1].encode('utf-8'), gensalt())
     
     # Substitui a senha original pela senha criptografada
     dados = (*dados[:-1], senha_criptografada)
@@ -199,7 +184,6 @@ def excluirConta():
 
 # Ver usuarios
 @app.route('/admin', methods=['GET'])
-@verificarAdmin
 def admin():
     cursor = db.cursor(dictionary=True)
     cursor.execute("SELECT * FROM usuario")
@@ -209,7 +193,6 @@ def admin():
 
 #adm excluir usuarios
 @app.route('/admin/excluir/<int:id>', methods=['POST'])
-@verificarAdmin
 def excluir_usuario(id):
     cursor = db.cursor()
     cursor.execute("DELETE FROM usuario WHERE id = %s",(id,))
@@ -220,7 +203,6 @@ def excluir_usuario(id):
 
 #adm editar usuarios
 @app.route('/admin/editar/<int:id>', methods=['GET','POST'])
-@verificarAdmin
 def editar_usuario(id):
     cursor = db.cursor(dictionary=True)
 
@@ -242,7 +224,7 @@ def editar_usuario(id):
             if nova_senha:
                 senha_criptografada = hashpw(nova_senha.encode('utf-8'), gensalt()).decode('utf-8')
             else:
-                cursor.execute("SELECT senha FROM usuario WHERE id = %s",(id,))
+                cursor.execute("SELECT senha FROM usuario WHERE id = %s",(id))
                 senha_criptografada = cursor.fetchone()['senha']
 
         
@@ -273,4 +255,42 @@ def logout():
 
 
 if __name__ == '__main__':
+    app.run(debug=True)
+
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return render_template("recuperar.html")
+
+@app.route('/recuperar-senha', methods=['POST'])
+def recuperar_senha():
+    data = request.get_json()
+    email = data.get("email")
+
+    reset_code = generate_reset_code(email)
+    store_reset_code_in_db(email, reset_code)
+    send_reset_email(email, reset_code)
+
+    return jsonify({"message": "Código enviado para o e-mail."}), 200
+
+@app.route('/redefinir')
+def redefinir():
+    return render_template("redefinir.html")
+
+@app.route('/redefinir-senha', methods=['POST'])
+def redefinir_senha():
+    data = request.get_json()
+    email = data.get("email")
+    reset_code = data.get("reset_code")
+    nova_senha = data.get("nova_senha")
+
+    if not verify_reset_code(email, reset_code):
+        return jsonify({"error": "Código inválido ou expirado"}), 400
+
+    reset_password(email, nova_senha)
+    return jsonify({"message": "Senha redefinida com sucesso!"}), 200
+
+if __name__ == "__main__":
     app.run(debug=True)
