@@ -13,12 +13,24 @@ CREATE TABLE usuario (
     bairro VARCHAR(50) NOT NULL,
     cep CHAR(8) NOT NULL,
     endereco VARCHAR(255) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    senha VARCHAR(255) NOT NULL
+    email VARCHAR(255) NOT NULL UNIQUE,
+    senha VARCHAR(255) NOT NULL,
+    reset_code VARCHAR(10)
 );
 
-ALTER TABLE usuario 
-ADD is_admin TINYINT DEFAULT 0;
-ADD reset_code VARCHAR(64),
-ADD reset_code_expiration DATETIME;
+CREATE TABLE reset_senhas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    codigo VARCHAR(10) NOT NULL,
+    expiracao DATETIME NOT NULL
+);
+
+
+ALTER TABLE usuario (
+    ADD is_admin TINYINT DEFAULT 0;
+    ADD reset_code VARCHAR(64),
+    ADD reset_code_expiration DATETIME; 
+);
+
+
 
