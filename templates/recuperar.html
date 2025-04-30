@@ -56,6 +56,11 @@
       margin-bottom: 20px;
     }
 
+    #mensagem {
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+
     .recuperar_senha {
       position: relative;
       margin-bottom: 20px;
@@ -103,6 +108,14 @@
       background: rgba(255, 255, 255, 0.15);
     }
 
+    #botaoRedefinir {
+      display: none;
+      margin-top: 15px;
+      text-decoration: none;
+      background: #0f0;
+      color: #000;
+    }
+
     @media screen and (max-width: 768px) {
       .container {
         width: 90%;
@@ -114,6 +127,9 @@
   <div class="container">
     <h2>Recuperar Senha</h2>
     <p>Digite seu e-mail para receber um código de redefinição.</p>
+
+    <div id="mensagem"></div>
+
     <form id="recuperarSenha">
       <div class="recuperar_senha">
         <label for="email">E-mail:</label>
@@ -121,19 +137,44 @@
       </div>
       <button type="submit">Enviar Código</button>
     </form>
+
+    <!-- Botão que aparece após sucesso -->
+    <a id="botaoRedefinir" href="/redefinir">
+      Ir para redefinir senha
+    </a>
   </div>
 
   <script>
     document.getElementById("recuperarSenha").addEventListener("submit", async function(e) {
       e.preventDefault();
       const email = document.getElementById("email").value;
-      const response = await fetch("/recuperar-senha", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email })
-      });
-      const result = await response.json();
-      alert(result.message || result.error);
+      const mensagemDiv = document.getElementById("mensagem");
+      const botaoRedefinir = document.getElementById("botaoRedefinir");
+  
+      try {
+        const response = await fetch("/recuperar-senha", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email })
+        });
+  
+        const result = await response.json();
+  
+        if (response.ok) {
+          mensagemDiv.style.color = "lightgreen";
+          mensagemDiv.textContent = "Código enviado para o e-mail com sucesso!";
+          botaoRedefinir.href = `/redefinir?email=${encodeURIComponent(email)}`;
+          botaoRedefinir.style.display = "inline-block";
+        } else {
+          mensagemDiv.style.color = "lightcoral";
+          mensagemDiv.textContent = result.error || "Erro ao enviar o código.";
+          botaoRedefinir.style.display = "none";
+        }
+      } catch (error) {
+        mensagemDiv.style.color = "lightcoral";
+        mensagemDiv.textContent = "Erro de conexão com o servidor.";
+        botaoRedefinir.style.display = "none";
+      }
     });
   </script>
 </body>
