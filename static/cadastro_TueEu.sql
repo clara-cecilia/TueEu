@@ -1,6 +1,6 @@
-CREATE SCHEMA `cadastro_TueEu`;
-USE cadastro_TueEu;
-select * from usuario;
+CREATE SCHEMA IF NOT EXISTS `cadastro_tueEu`;
+USE `cadastro_tueEu`;
+
 CREATE TABLE usuario (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
@@ -17,18 +17,15 @@ CREATE TABLE usuario (
     email VARCHAR(255) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL,
     is_admin TINYINT DEFAULT 0,
-    reset_code VARCHAR(64) DEFAULT NULL,
-    reset_code_expiration DATETIME DEFAULT NULL
+    is_master_admin TINYINT DEFAULT 0,
+    status ENUM('ativo', 'inativo') DEFAULT 'ativo',
+    email_verificado TINYINT DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE reset_senhas (
     id INT AUTO_INCREMENT PRIMARY KEY, 
-    email VARCHAR(255) NOT NULL,
+    usuario_id INT NOT NULL,
     codigo VARCHAR(10) NOT NULL,
     expiracao DATETIME NOT NULL,
-    FOREIGN KEY (email) REFERENCES usuario(email) ON DELETE CASCADE
+    FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
 );
-
-ALTER TABLE usuario
-ADD COLUMN is_master_admin TINYINT DEFAULT 0,
-ADD COLUMN status ENUM('ativo', 'inativo') DEFAULT 'ativo';
