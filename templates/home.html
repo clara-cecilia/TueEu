@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Home - Tu & Eu</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Olá, {{ usuario }}!</h1>
+
+        <p>Seja bem-vindo(a) ao Tu & Eu.</p><br><br>
+
+        <div>
+            <a href="{{ url_for('editarDados') }}">
+                <button>Alterar meus dados</button>
+            </a>
+        </div><br>
+
+        <div>
+            <form action="{{ url_for('excluirConta') }}" method="post" onsubmit="return confirm('Tem certeza que deseja excluir sua conta?');">
+                <button type="submit" style="background-color: red; color: white;">Excluir minha conta</button>
+            </form>
+        </div><br>
+
+        <a href="{{ url_for('logout') }}">
+            <button>Logout</button>
+        </a>
+    </div>
+</body>
+</html>

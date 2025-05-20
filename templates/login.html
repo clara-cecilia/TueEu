@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+   <html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TU & EU</title>
+    <link rel="stylesheet" href="/static/stylelogin.css">
+</head>
+
+<body>
+    <div class="container">
+       <!--<div>
+            <a href="{{ url_for('index') }}"><button type="submit" class="inicio__button">Voltar</button></a>
+        </div>--> 
+
+        <form action="{{ url_for('logar') }}" method="post">
+            <a href="{{ url_for('index') }}" ><img src="/static/img/logotueeu.png" alt="Logo" class="logo"></a>
+            <h2>Login</h2>            
+            <div class="input-field">
+                <input type="email" name="email" required />
+                <label>Insira o e-mail</label>
+            </div>
+            <div class="input-field">
+                <input type="password" name="senha" required />
+                <label>Insira a senha</label>
+            </div>
+            <div class="forget">
+                <a href="{{ url_for('esqueceuSenha') }}">Esqueceu sua senha?</a>
+            </div>
+            <br><br>
+
+            <button type="submit">Login</button>
+            <br><br>
+
+            <div class="Create-account">
+                <p>Não tem uma conta? <a href="{{ url_for('cadastro') }}">Cadastre-se</a></p>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
