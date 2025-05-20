@@ -28,3 +28,7 @@ CREATE TABLE reset_senhas (
     expiracao DATETIME NOT NULL,
     FOREIGN KEY (email) REFERENCES usuario(email) ON DELETE CASCADE
 );
+
+ALTER TABLE usuario
+ADD COLUMN is_master_admin TINYINT DEFAULT 0,
+ADD COLUMN status ENUM('ativo', 'inativo') DEFAULT 'ativo';

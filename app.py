@@ -18,7 +18,7 @@ def conectar_bd():
         db = mysql.connector.connect(
             host="localhost",
             user="root",
-            password="",
+            password="2904",
             port='3306',
             database="cadastro_tueeu"
         )
@@ -133,7 +133,7 @@ def cadastrar():
     db.commit()
     cursor.close()
     
-    return redirect('/')
+    return redirect('home')
 
 # -------------------------- LOGIN --------------------------
 
@@ -145,6 +145,7 @@ def logar():
     cursor = db.cursor(dictionary=True)
     cursor.execute("SELECT * FROM usuario WHERE email = %s", (email,))
     usuario = cursor.fetchone()
+    cursor.close()
 
     if usuario:
         senha_armazenada = usuario['senha']
@@ -160,7 +161,8 @@ def logar():
     else:
         flash('E-mail não encontrado.')
 
-    return redirect(url_for('home'))
+    return redirect(url_for('login'))  # redireciona para login se falhar
+
 
 # -------------------------- RECUPERAÇÃO DE SENHA --------------------------
 
@@ -187,6 +189,142 @@ def redefinir_senha():
         return jsonify({"message": "Senha redefinida com sucesso!"})
     
     return jsonify({"error": "Código inválido ou e-mail não encontrado."}), 400
+
+# -------------------------- FUNÇOES ADM --------------------------
+@app.route('/admin')
+def admin():
+    if 'usuario' not in session or not session.get('is_admin'):
+        flash("Acesso restrito.")
+        return redirect(url_for('login'))
+
+    return render_template('admin.html')
+
+@app.route('/gerenciarUsuarios')
+def gerenciarUsuarios():
+    if not session.get('is_admin'):
+        flash("Acesso negado.")
+        return redirect(url_for('login'))
+
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM usuario WHERE is_admin = 0")
+    usuarios = cursor.fetchall()
+    cursor.close()
+
+    return render_template('gerenciarUsuarios.html', usuarios=usuarios)
+
+@app.route('/gerenciarAdms')
+def gerenciarAdministradores():
+    if not session.get('is_admin'):
+        flash("Acesso negado.")
+        return redirect(url_for('login'))
+
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM usuario WHERE is_admin = 1")
+    admins = cursor.fetchall()
+    cursor.close()
+
+    return render_template('gerenciarAdministradores.html', admins=admins)
+
+@app.route('/novoAdmin', methods=['POST'])
+def novoAdmin():
+    try:
+        nome = request.form['nome']
+        sexo = request.form['sexo']
+        data_nasc = request.form['data_nasc']
+        pais = request.form['pais']
+        estado = request.form['estado']
+        cidade = request.form['cidade']
+        bairro = request.form['bairro']
+        email = request.form['email']
+        senha = request.form['senha']
+
+        senha_hash = bcrypt.hashpw(senha.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+        cursor = db.cursor()
+        cursor.execute("""
+            INSERT INTO usuario 
+            (nome, sexo, data_nasc, pais, estado, cidade, bairro, email, senha, is_admin, is_master_admin) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 1, 0)
+        """, (nome, sexo, data_nasc, pais, estado, cidade, bairro, email, senha_hash))
+        
+        db.commit()
+        cursor.close()
+
+        flash("Administrador cadastrado com sucesso!", "sucesso")
+    except Exception as e:
+        flash("Erro ao cadastrar administrador: " + str(e), "erro")
+
+    return redirect(url_for('gerenciarAdministradores'))
+
+@app.route('/editarUsuario/<int:id>', methods=['GET', 'POST'])
+def editarUsuario(id):
+    if 'usuario' not in session or not session.get('is_admin'):
+        flash("Acesso restrito.")
+        return redirect(url_for('login'))
+
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM usuario WHERE id = %s", (id,))
+    usuario = cursor.fetchone()
+
+    if not usuario:
+        flash("Usuário não encontrado.")
+        return redirect(url_for('admin'))
+
+    if request.method == 'POST':
+        nome = request.form['nome']
+        sexo = request.form['sexo']
+        cpf = request.form['cpf']
+        data_nasc = request.form['data_nasc']
+        telefone = request.form['telefone']
+        pais = request.form['pais']
+        estado = request.form['estado']
+        cidade = request.form['cidade']
+        bairro = request.form['bairro']
+        cep = request.form['cep']
+        endereco = request.form['endereco']
+        email = request.form['email']
+        senha = request.form['senha']
+
+        if senha:
+            cursor.execute("""
+                UPDATE usuario SET nome=%s, sexo=%s, cpf=%s, data_nasc=%s, telefone=%s,
+                pais=%s, estado=%s, cidade=%s, bairro=%s, cep=%s, endereco=%s, email=%s, senha=SHA2(%s, 256)
+                WHERE id=%s
+            """, (nome, sexo, cpf, data_nasc, telefone, pais, estado, cidade, bairro, cep, endereco, email, senha, id))
+        else:
+            cursor.execute("""
+                UPDATE usuario SET nome=%s, sexo=%s, cpf=%s, data_nasc=%s, telefone=%s,
+                pais=%s, estado=%s, cidade=%s, bairro=%s, cep=%s, endereco=%s, email=%s
+                WHERE id=%s
+            """, (nome, sexo, cpf, data_nasc, telefone, pais, estado, cidade, bairro, cep, endereco, email, id))
+        
+        db.commit()
+        cursor.close()
+        flash("Usuário atualizado com sucesso.")
+        return redirect(url_for('admin'))
+
+    cursor.close()
+    return render_template('editarUsuario.html', usuario=usuario)
+
+@app.route('/excluirUsuario/<int:id>', methods=['POST'])
+def excluirUsuario(id):
+    if 'usuario' not in session or not session.get('is_admin'):
+        flash("Acesso restrito.")
+        return redirect(url_for('login'))
+
+    cursor = db.cursor()
+    # Prevenir exclusão do admin master (exemplo: id=1)
+    if id == 1:
+        flash("Não é possível excluir o administrador master.")
+        return redirect(url_for('admin'))
+
+    cursor.execute("DELETE FROM usuario WHERE id = %s", (id,))
+    db.commit()
+    cursor.close()
+    flash("Usuário excluído com sucesso.")
+    return redirect(url_for('admin'))
+
+
 
 # -------------------------- RODAR APP --------------------------
 
