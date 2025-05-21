@@ -16,7 +16,7 @@ def conectar_bd():
         banco = mysql.connector.connect(
             host="localhost",
             user="root",
-            password="280697",
+            password="",
             port='3306',
             database="cadastro_TueEu"
         )
@@ -186,7 +186,8 @@ def logar():
     cursor.execute("SELECT * FROM usuario WHERE email = %s", (email,))
     usuario = cursor.fetchone()
     cursor.close()
-    
+    print("Recebendo login para usuário:", email)
+
     if usuario:
         if usuario.get('email_verificado', 0) != 1:
             flash('Por favor, confirme seu e-mail antes de fazer login.')
