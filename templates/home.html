@@ -18,9 +18,10 @@
         </div><br>
 
         <div>
-            <form action="{{ url_for('excluirConta') }}" method="post" onsubmit="return confirm('Tem certeza que deseja excluir sua conta?');">
+            <form action="{{ url_for('excluirUsuario', id=session['usuario_id']) }}" method="post" onsubmit="return confirm('Tem certeza que deseja excluir sua conta?');">
                 <button type="submit" style="background-color: red; color: white;">Excluir minha conta</button>
             </form>
+
         </div><br>
 
         <a href="{{ url_for('logout') }}">

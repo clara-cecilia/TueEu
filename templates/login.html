@@ -9,10 +9,16 @@
 </head>
 
 <body>
-    <div class="container">
-       <!--<div>
-            <a href="{{ url_for('index') }}"><button type="submit" class="inicio__button">Voltar</button></a>
-        </div>--> 
+  <div class="container">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+    <div class="flash-messages">
+     {% for message in messages %}
+        <div class="alert">{{ message }}</div>
+     {% endfor %}
+    </div>
+      {% endif %}
+    {% endwith %}
 
         <form action="{{ url_for('logar') }}" method="post">
             <a href="{{ url_for('index') }}" ><img src="/static/img/logotueeu.png" alt="Logo" class="logo"></a>
@@ -26,7 +32,8 @@
                 <label>Insira a senha</label>
             </div>
             <div class="forget">
-                <a href="{{ url_for('esqueceuSenha') }}">Esqueceu sua senha?</a>
+                <a href="{{ url_for('recuperar_senha') }}">Esqueceu sua senha?</a>
+
             </div>
             <br><br>
 

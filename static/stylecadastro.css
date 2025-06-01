@@ -232,3 +232,13 @@ p a:hover {
         align-items: flex-start;
     }
 }
+
+.flash-messages {
+  list-style-type: none;
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: #ffdddd;
+  border: 1px solid #ff5c5c;
+  color: #a80000;
+  border-radius: 5px;
+}

@@ -100,7 +100,7 @@
             <tr>
                 <td>{{ a.nome }}</td>
                 <td>{{ a.email }}</td>
-                <td>{{ 'Sim' if a.is_master_admin else 'Não' }}</td>
+                <td>{{ 'Sim' if a.is_master else 'Não' }}</td>
                 <td>
                     <a href="{{ url_for('editarUsuario', id=a.id) }}" class="btn btn-sm btn-warning">Editar</a>
                     <form action="{{ url_for('excluirUsuario', id=a.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Confirma exclusão?');">

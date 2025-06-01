@@ -14,14 +14,12 @@
       --border-color: rgba(255, 255, 255, 0.5);
       --body-font: "Open Sans", sans-serif;
     }
-
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       font-family: var(--body-font);
-    } 
-
+    }
     body {
       display: flex;
       align-items: center;
@@ -29,11 +27,11 @@
       min-height: 100vh;
       width: 100%;
       padding: 0 10px;
-      background: url("/img/wallpaperants.png"), #000;
+      /* Atualize o caminho abaixo para buscar a imagem na pasta static/img */
+      background: url("/static/img/wallpaperants.png"), #000;
       background-position: center;
       background-size: cover;
     }
-
     .container {
       width: 45%;
       border-radius: 8px;
@@ -44,25 +42,21 @@
       -webkit-backdrop-filter: blur(7px);
       background: var(--container-color);
     }
-
     h2 {
       font-size: 2rem;
       margin-bottom: 20px;
       color: var(--title-color);
     }
-
     .input-group {
       margin-bottom: 20px;
       text-align: left;
     }
-
     .input-group label {
       display: block;
       margin-bottom: 5px;
       font-weight: 500;
       color: var(--title-color);
     }
-
     .input-group input {
       width: 100%;
       height: 40px;
@@ -73,11 +67,9 @@
       color: var(--text-color);
       outline: none;
     }
-
     .input-group input::placeholder {
       color: var(--text-color);
     }
-
     button {
       background: #fff;
       color: #000;
@@ -90,13 +82,11 @@
       border: 2px solid transparent;
       transition: 0.3s ease;
     }
-
     button:hover {
       color: #fff;
       border-color: #fff;
       background: rgba(255, 255, 255, 0.15);
     }
-
     @media screen and (max-width: 768px) {
       .container {
         width: 90%;
@@ -107,42 +97,14 @@
 <body>
   <div class="container">
     <h2>Redefinir Senha</h2>
-    <form id="verificarCodigoForm">
+    <form action="{{ url_for('definir_senha') }}" method="post">
+      <input type="hidden" name="token" value="{{ token }}">
       <div class="input-group">
-        <label for="email">E-mail:</label>
-        <input type="email" id="email" placeholder="Seu e-mail" required>
+        <label for="nova_senha">Nova Senha:</label>
+        <input type="password" id="nova_senha" name="nova_senha" placeholder="Digite a nova senha" required>
       </div>
-      <div class="input-group">
-        <label for="codigo">Código recebido:</label>
-        <input type="text" id="codigo" placeholder="Código recebido" required>
-      </div>
-      <div class="input-group">
-        <label for="novaSenha">Nova senha:</label>
-        <input type="password" id="novaSenha" placeholder="Nova senha" required>
-      </div>
-      <button type="submit">Redefinir</button>
-      </form>
+      <button type="submit">Redefinir Senha</button>
+    </form>
   </div>
-
-  <script>
-    document.getElementById("verificarCodigoForm").addEventListener("submit", async function(e) {
-      e.preventDefault();
-      const email = document.getElementById("email").value;
-      const codigo = document.getElementById("codigo").value;
-      const novaSenha = document.getElementById("novaSenha").value;
-
-      const response = await fetch("/redefinir-senha", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: email,
-          reset_code: codigo,
-          nova_senha: novaSenha
-        })
-      });
-      const result = await response.json();
-      alert(result.message || result.error);
-    });
-  </script>
 </body>
 </html>
