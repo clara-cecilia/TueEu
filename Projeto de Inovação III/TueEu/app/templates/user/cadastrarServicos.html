@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastrar Serviços - Tu & Eu</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/tueeulogoicon.ico') }}">
+  <link rel="stylesheet" href="/TueEu/app/static/css/styleUsuario.css">
+</head>
+
+<body>
+  <!-- Cabeçalho -->
+  <header class="header">
+    <nav class="navbar">
+      <!-- Logo da empresa -->
+      <a href="{{ url_for('auth.home') }}">
+        <img src="{{ url_for('static', filename='img/logotueeu.png') }}" alt="Logo" style="height:50px;">
+      </a>
+      <!-- Menu de Serviços -->
+      <div>
+        <a href="#">Buscar Serviços</a>
+        <a href="/meusServicos">Meus Serviços</a>
+        <a href="/cadastrarServicos">Cadastrar Serviços</a>
+      </div>
+      <!-- Menu de Usuário -->
+      <div>
+        <div class="user-menu">
+          <a href="#">{{ usuario }}</a>
+          <div class="dropdown-content">
+            <a href="{{ url_for('auth.editarDados') }}">Editar Dados</a>
+            <a href="{{ url_for('auth.logout') }}" class="btn-sair">Sair</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Formulário de Cadastro de Serviço -->
+  <main class="main">
+    <div class="form-container">
+      <h1>Cadastrar Serviço</h1>
+      <p>Preencha as informações abaixo para oferecer ou solicitar um serviço.</p>
+      <!-- Atualize o endpoint da ação para usar o blueprint 'service' -->
+      <form action="{{ url_for('service.cadastrarServicos') }}" method="POST" enctype="multipart/form-data">
+
+        <div class="form-group">
+          <label for="titulo">Título do Serviço:</label>
+          <input type="text" id="titulo" name="titulo" required>
+        </div>
+
+        <div class="form-group">
+          <label for="descricao">Descrição:</label>
+          <textarea id="descricao" name="descricao" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="categoria">Categoria:</label>
+          <select id="categoria" name="categoria" required>
+            <option value="">Selecione a categoria</option>
+            <option value="estetica">Estética</option>
+            <option value="automotiva">Automotiva</option>
+            <option value="limpeza">Limpeza Domiciliar</option>
+            <option value="mecanica">Mecânica</option>
+            <option value="informatica">Serviços de Informática</option>
+            <option value="jardinagem">Jardinagem</option>
+            <option value="reformas">Reformas / Manutenção</option>
+            <option value="educacao">Aulas / Educação</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="estado">Estado:</label>
+          <select name="estado" id="estado">
+            <option value="">Selecione...</option>
+            <option value="AC">AC</option>
+            <option value="AL">AL</option>
+            <option value="AP">AP</option>
+            <option value="AM">AM</option>
+            <option value="BA">BA</option>
+            <option value="CE">CE</option>
+            <option value="ES">ES</option>
+            <option value="DF">DF</option>
+            <option value="MA">MA</option>
+            <option value="MT">MT</option>
+            <option value="MS">MS</option>
+            <option value="MG">MG</option>
+            <option value="PA">PA</option>
+            <option value="PB">PB</option>
+            <option value="PR">PR</option>
+            <option value="PE">PE</option>
+            <option value="PI">PI</option>
+            <option value="RJ">RJ</option>
+            <option value="RN">RN</option>
+            <option value="RS">RS</option>
+            <option value="RO">RO</option>
+            <option value="RR">RR</option>
+            <option value="SC">SC</option>
+            <option value="SP">SP</option>
+            <option value="SE">SE</option>
+            <option value="TO">TO</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="cidade">Cidade:</label>
+          <input type="text" id="cidade" name="cidade" required>
+        </div>
+
+        <div class="form-group">
+          <label>Disponibilidade:</label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="turno" value="manha"> Manhã</label>
+            <label><input type="checkbox" name="turno" value="tarde"> Tarde</label>
+            <label><input type="checkbox" name="turno" value="noite"> Noite</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="imagem">Imagem (opcional):</label>
+          <input type="file" id="imagem" name="imagem" accept="image/*">
+        </div>
+
+        <div class="form-group">
+          <button type="submit" class="button">Cadastrar Serviço</button>
+        </div>
+
+      </form>
+    </div>
+  </main>
+
+  <!-- Rodapé -->
+  <footer class="custom-footer pt-4 my-md-5 pt-md-5 border-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-12 col-md">
+          <img class="mb-2 footer-logo" src="{{ url_for('static', filename='img/logotueeu.png') }}" alt="Logo Tu & Eu">
+          <small class="d-block mb-3">© 2025 Tu & Eu</small>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    setTimeout(function () {
+      // Seleciona todas as mensagens flash
+      var flashMessages = document.querySelectorAll('.flash-messages li');
+      flashMessages.forEach(function (message) {
+        message.style.transition = "opacity 1s ease";
+        message.style.opacity = 0;
+        // Remove o elemento após a transição (1s)
+        setTimeout(function () {
+          message.remove();
+        }, 1000);
+      });
+    }, 90000);
+  </script>
+
+  <!-- Script do Bootstrap -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
+          crossorigin="anonymous"></script>
+
+</body>
+
+</html>

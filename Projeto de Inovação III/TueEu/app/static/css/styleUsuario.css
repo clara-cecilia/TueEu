@@ -1,0 +1,221 @@
+ /* Global */
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background-color: #fff;
+      color: #000;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Cabeçalho */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background: linear-gradient(45deg, #bc6ff1, #892cdc);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    .navbar a {
+      color: white;
+      margin: 0 1rem;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .navbar a:hover {
+      color: #52057b;
+    }
+    
+    /* Dropdown (menu padrão e do usuário) com efeito fade-in */
+    .dropdown, .user-menu {
+      position: relative;
+      display: inline-block;
+    }
+    .dropdown-content, .user-menu .dropdown-content {
+      opacity: 0;
+      visibility: hidden;
+      position: absolute;
+      background-color: #892cdc;
+      min-width: 150px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+      z-index: 1;
+    }
+    .dropdown-content a, .user-menu .dropdown-content a {
+      color: white;
+      padding: 0.5rem 1rem;
+      text-decoration: none;
+      display: block;
+      transition: background-color 0.3s;
+    }
+    .dropdown-content a:hover, .user-menu .dropdown-content a:hover {
+      background-color: #52057b;
+    }
+    .dropdown:hover .dropdown-content,
+    .user-menu:hover .dropdown-content {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    
+    /* Painel Principal */
+    .main-panel {
+      padding: 3rem 1rem;
+      text-align: center;
+      flex: 1;
+    }
+    .main-panel h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .main-panel p {
+      font-size: 1.125rem;
+      margin-bottom: 2rem;
+    }
+    .button {
+      background-color: #892cdc;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: background-color 0.3s, transform 0.3s;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    .button:hover {
+      background-color: #52057b;
+      transform: scale(1.05);
+    }
+    
+    /* Rodapé */
+    footer.custom-footer {
+      background-color: #52057b;
+      color: white;
+      padding: 2rem 1rem;
+      margin-top: 3rem;
+      text-align: center;
+    }
+    footer.custom-footer a {
+      color: #bc6ff1;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    footer.custom-footer a:hover {
+      color: #892cdc;
+    }
+    footer.custom-footer img.footer-logo {
+      height: 24px;
+      width: 24px;
+    }
+    
+    /* Menu do Usuário - aparência de botão */
+    .user-menu {
+      background-color: #892cdc;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-left: 1rem;
+      transition: background-color 0.3s;
+    }
+    .user-menu:hover {
+      background-color: #52057b;
+    }
+    
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .navbar a {
+        margin: 0.5rem 0;
+      }
+      .main-panel {
+        padding: 2rem 1rem;
+      }
+      .main-panel h1 {
+        font-size: 2rem;
+      }
+      .main-panel p {
+        font-size: 1rem;
+      }
+      .button {
+        font-size: 0.875rem;
+        padding: 0.5rem 1rem;
+      }
+    }
+    /* Container do Formulário */
+.form-container {
+  max-width: 1000px; /* Tamanho máximo */
+  margin: 3rem auto; /* Centraliza horizontalmente */
+  padding: 2rem;
+  background: #f9f9f9; /* Fundo suave */
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Título e Descrição do Formulário */
+.form-container h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #892cdc; /* Pode ajustar a cor para harmonizar com seu tema */
+}
+
+.form-container p {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* Estilização dos Grupos de Formulário */
+.form-container .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-container .form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+/* Estilização de Inputs, Textarea, Select e File */
+.form-container .form-group input[type="text"],
+.form-container .form-group input[type="file"],
+.form-container .form-group select,
+.form-container .form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* Estilização da Checkbox Group (Disponibilidade) */
+.checkbox-group {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.checkbox-group label {
+  font-weight: normal;
+}
+
+/* Ajuste opcional para o botão */
+.form-container .button {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1.125rem;
+  margin-top: 1rem;
+  text-align: center;
+}
