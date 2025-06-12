@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tu & Eu</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="icon" type="image/png" href="/static/img/tueeulogoicon.ico">
+</head>
+<body>
+    <!--==================== HEADER ====================-->
+    <header class="header">
+    <nav class="nav container">
+        <!-- Logo -->
+        <a class="nav__logo">
+            <img src="/static/img/logotueeu.png" alt="Logo">
+        </a>
+
+        <!-- Menu de navegação -->
+        <div class="nav__menu">
+            <ul class="nav__list">
+                <li><a href="#" class="nav__link">Início</a></li>
+                <li><a href="#" class="nav__link">Sobre nós</a></li>
+                <li><a href="#" class="nav__link">Serviços</a></li>
+            </ul>
+        </div>
+
+        <!-- Botão de login-->
+        <div>
+            <a href="{{ url_for('auth.login') }}"><button class="button">Login</button></a>
+        </div>
+    </nav>
+    </header>
+
+    <!--==================== CONTEÚDO PRINCIPAL ====================-->
+    <main class="main">
+        <h1 class="main__title">Conectando talentos, trocando serviços!</h1>
+        <p class="main__subtitle">Faça seu cadastro e encontre profissionais incríveis!</p>
+        <a href="{{ url_for('auth.cadastro') }}"><button class="button">Criar uma Conta</button></a>
+    </main>
+</body>
+</html>
