@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Recuperar Senha</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --first-color: hsl(0, 0%, 100%);
+      --title-color: hsl(0, 0%, 100%);
+      --text-color: hsl(230, 12%, 85%);
+      --body-color: hsl(0, 0%, 100%);
+      --container-color: rgba(255, 255, 255, 0);
+      --border-color: rgba(255, 255, 255, 0.5);
+      --body-font: "Open Sans", sans-serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--body-font); }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      width: 100%;
+      padding: 0 10px;
+      /* Ajustado para buscar a imagem dentro de static/img */
+      background: url("/static/img/wallpaperants.png"), #000;
+      background-position: center;
+      background-size: cover;
+    }
+    .container {
+      width: 45%;
+      border-radius: 8px;
+      padding: 30px;
+      text-align: center;
+      border: 1px solid var(--border-color);
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+      background: var(--container-color);
+    }
+    h2 { font-size: 2rem; margin-bottom: 20px; color: var(--title-color); }
+    p { color: var(--text-color); margin-bottom: 20px; }
+    .recuperar_senha {
+      position: relative;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .recuperar_senha label {
+      color: var(--title-color);
+      font-weight: 500;
+      margin-bottom: 5px;
+      display: block;
+    }
+    .recuperar_senha input {
+      width: 100%;
+      height: 40px;
+      background: transparent;
+      border: 2px solid var(--border-color);
+      border-radius: 5px;
+      padding: 10px;
+      color: var(--text-color);
+      outline: none;
+    }
+    .recuperar_senha input::placeholder { color: var(--text-color); }
+    button {
+      background: #fff;
+      color: #000;
+      font-weight: 600;
+      border: none;
+      padding: 12px 20px;
+      cursor: pointer;
+      border-radius: 3px;
+      font-size: 16px;
+      border: 2px solid transparent;
+      transition: 0.3s ease;
+    }
+    button:hover {
+      color: #fff;
+      border-color: #fff;
+      background: rgba(255, 255, 255, 0.15);
+    }
+    @media screen and (max-width: 768px) { .container { width: 90%; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Recuperar Senha</h2>
+    <p>Digite seu e‑mail para receber um link de redefinição.</p>
+    <form action="{{ url_for('auth.recuperar_senha') }}" method="POST">
+      <div class="recuperar_senha">
+        <label for="email">E‑mail:</label>
+        <input type="email" name="email" id="email" required placeholder="Seu e‑mail">
+      </div>
+      <button type="submit">Enviar Link</button>
+    </form>
+  </div>
+</body>
+</html>

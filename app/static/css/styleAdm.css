@@ -1,0 +1,99 @@
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+}
+
+/* Barra lateral */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+  background-color: #343a40; /* Cinza escuro */
+  color: #fff;
+  padding: 20px;
+}
+
+nav h1 {
+  font-size: 24px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+nav ul li {
+  margin-bottom: 20px;
+}
+
+nav ul li a {
+  display: block;
+  padding: 10px 15px;
+  text-decoration: none;
+  color: #adb5bd; /* Cinza claro */
+  border-radius: 4px;
+}
+
+nav ul li a:hover,
+nav ul li a.active {
+  background-color: #495057;
+  color: #fff;
+}
+
+/* Área principal do dashboard */
+.dashboard {
+  margin-left: 250px;
+  padding: 40px 20px;
+}
+
+.dashboard h2 {
+  margin-bottom: 30px;
+  color: #212529;
+}
+
+/* Modal estilos */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  position: relative;
+}
+
+.fechar {
+  color: #aaa;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.fechar:hover {
+  color: #000;
+}
