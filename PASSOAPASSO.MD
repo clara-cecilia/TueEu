@@ -53,3 +53,5 @@ def criar_administrador_master():
         print(f"Erro ao criar administrador master: {e}")
 
 criar_administrador_master()
+
+- Ajustar .env
