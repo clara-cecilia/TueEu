@@ -4,12 +4,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Página do Usuário - Tu & Eu</title>
+  <title>Editar Dados - Tu & Eu</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/logotueeu.png') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styleUsuario.css') }}">
-
+  <!-- Adicionando jQuery e jQuery Mask Plugin -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 </head>
 
 <body>
@@ -29,7 +31,7 @@
       <!-- Menu de Usuário -->
       <div>
         <div class="user-menu">
-          <a href="#">{{ usuario }}</a>
+          <a href="#">{{ usuario.nome }}</a>
           <div class="dropdown-content">
             <a href="{{ url_for('auth.editar_dados')}}">Editar Dados</a>
             <a href="/logout" class="btn-sair">Sair</a>
@@ -39,15 +41,15 @@
     </nav>
   </header>
 
-  <!-- Conteúdo principal: Formulário de Edição de Dados do Usuário -->
+  <!-- Conteúdo principal -->
   <main class="main">
     <div class="form-container">
       <h1>Editar Dados</h1>
-      <form action="{{ url_for('auth.editar_dados') }}" method="post">
-        <!-- Campo Nome -->
+      <form action="{{ url_for('auth.editar_dados') }}" method="post" id="formEditarDados">
+        <!-- Campo Nome (readonly) -->
         <div class="mb-3">
           <label for="nome" class="form-label">Nome</label>
-          <input type="text" class="form-control" id="nome" name="nome" value="{{ usuario.nome }}" required>
+          <input type="text" class="form-control" id="nome" name="nome" value="{{ usuario.nome }}" style="background-color: rgb(221, 219, 219);" readonly>
         </div>
 
         <!-- Campo Sexo -->
@@ -65,28 +67,27 @@
           </div>
         </div>
 
-        <!-- CPF (apenas para exibição, mascarado: 5 primeiros dígitos + asteriscos) -->
+        <!-- CPF (readonly com máscara) -->
         <div class="mb-3">
           <label for="cpf" class="form-label">CPF</label>
-          {% if usuario.cpf %}
-          {% set cpf_mask = usuario.cpf[:5] + ('*' * (usuario.cpf|length - 5)) %}
-          {% else %}
-          {% set cpf_mask = '' %}
-          {% endif %}
-          <input type="text" class="form-control" id="cpf" name="cpf" value="{{ cpf_mask }}" readonly>
+          <input type="text" class="form-control" id="cpf" name="cpf" style="background-color: rgb(221, 219, 219);"
+                 value="{{ usuario.cpf }}" readonly
+                 data-mask="000.000.000-00">
         </div>
 
-        <!-- Data de Nascimento -->
+        <!-- Data de Nascimento (readonly) -->
         <div class="mb-3">
           <label for="data_nasc" class="form-label">Data de Nascimento</label>
-          <input type="date" class="form-control" id="data_nasc" name="data_nasc" value="{{ usuario.data_nasc }}"
-            required>
+          <input type="text" class="form-control" id="data_nasc" style="background-color: rgb(221, 219, 219);"
+                 value="{{ usuario.data_nasc.strftime('%d/%m/%Y') if usuario.data_nasc else '' }}" readonly>
         </div>
 
-        <!-- Telefone -->
+        <!-- Telefone (com máscara) -->
         <div class="mb-3">
           <label for="telefone" class="form-label">Telefone</label>
-          <input type="text" class="form-control" id="telefone" name="telefone" value="{{ usuario.telefone }}" required>
+          <input type="text" class="form-control" id="telefone" name="telefone" 
+                 value="{{ usuario.telefone }}" required
+                 data-mask="(00) 00000-0000">
         </div>
 
         <!-- País -->
@@ -107,16 +108,21 @@
           <input type="text" class="form-control" id="cidade" name="cidade" value="{{ usuario.cidade }}" required>
         </div>
 
-        <!-- CEP -->
+        <!-- CEP (com máscara) -->
         <div class="mb-3">
           <label for="cep" class="form-label">CEP</label>
-          <input type="text" class="form-control" id="cep" name="cep" value="{{ usuario.cep }}" required>
+          <input type="text" class="form-control" id="cep" name="cep" 
+                 value="{{ usuario.cep }}" required
+                 data-mask="00000-000">
         </div>
 
-        <!-- Email -->
+        <!-- Email (com validação básica) -->
         <div class="mb-3">
           <label for="email" class="form-label">E-mail</label>
-          <input type="email" class="form-control" id="email" name="email" value="{{ usuario.email }}" required>
+          <input type="email" class="form-control" id="email" name="email" 
+                 value="{{ usuario.email }}" required
+                 pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+          <div class="invalid-feedback">Por favor, insira um e-mail válido.</div>
         </div>
 
         <!-- Senha para confirmar alterações -->
@@ -127,14 +133,16 @@
 
         <button type="submit" class="btn btn-primary">Salvar Alterações</button>
       </form>
+      
       <!-- Formulário para desativar conta -->
       <form action="{{ url_for('auth.desativar_conta') }}" method="post"
         onsubmit="return confirm('Deseja realmente desativar sua conta? Esta ação inativará seu cadastro e fará o logout.');">
-        <button type="submit" class="btn btn-danger">Desativar Conta</button>
+        <button type="submit" class="btn btn-danger mt-3">Desativar Conta</button>
       </form>
     </div>
   </main>
-  <!-- Rodapé customizado -->
+
+    <!-- Rodapé customizado -->
   <footer class="custom-footer pt-4 my-md-5 pt-md-5 border-top">
     <div class="container">
       <div class="row">
@@ -145,11 +153,30 @@
       </div>
     </div>
   </footer>
-  <!-- Script do Bootstrap (verifique se o hash de integridade está correto) -->
+
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
     crossorigin="anonymous"></script>
-
+  
+  <script>
+  $(document).ready(function(){
+    // Aplicar máscaras
+    $('[data-mask]').each(function(){
+      $(this).mask($(this).data('mask'));
+    });
+    
+    // Validação do formulário
+    $('#formEditarDados').on('submit', function(e){
+      const form = this;
+      if (!form.checkValidity()) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      
+      form.classList.add('was-validated');
+    });
+  });
+  </script>
 </body>
-
 </html>

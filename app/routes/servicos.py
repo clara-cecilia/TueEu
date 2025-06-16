@@ -1,4 +1,4 @@
-import os
+import os 
 from flask import (
     Blueprint, request, session, flash, redirect,
     url_for, current_app, render_template
@@ -13,61 +13,54 @@ app.config.from_object(Config)
 
 servicos = Blueprint('servicos', __name__)
 
-@servicos.route('/cadastrar_servicos', methods=['GET', 'POST'])
+@servicos.route('/cadastrar_servico', methods=['GET', 'POST'])
 def cadastrar_servico():
-    # Verifica se o usuário está logado
     if 'usuario_id' not in session:
         flash("Você precisa estar logado para cadastrar um serviço.", "warning")
         return redirect(url_for('auth.login'))
     
-    # Processamento do formulário de cadastro
     if request.method == 'POST':
-        titulo = request.form['titulo']
-        descricao = request.form['descricao']
-        categoria = request.form.get("categoria", "").strip()  # Obtém a categoria e remove espaços extras
-        turnos = ",".join(request.form.getlist('turno'))
-        servicos_interesse = ",".join(request.form.getlist('servicos_interesse'))
-        imagem = request.files.get('imagem')
+        # Coleta os dados do formulário
+        titulo = request.form.get('titulo', '').strip()
+        descricao = request.form.get('descricao', '').strip()  # Corrigido: sem acento
+        categoria = request.form.get('categoria', '').strip()
+        turnos = ",".join(request.form.getlist('turno'))  # Ex: "manha,tarde"
+        tipo_servico = request.form.get('tipo_servico')  # 'oferece' ou 'busca'
 
-        imagem_path = None
-        if imagem and imagem.filename != '':
-            filename = secure_filename(imagem.filename)
-            # Caminho absoluto onde o arquivo será salvo (usando UPLOAD_FOLDER da configuração)
-            upload_folder = current_app.config['UPLOAD_FOLDER']
-            if not os.path.exists(upload_folder):
-                os.makedirs(upload_folder)
-            
-            # Constrói o caminho absoluto e salva o arquivo
-            absolute_file_path = os.path.join(upload_folder, filename)
-            imagem.save(absolute_file_path)
-            
-            # Construa o caminho relativo à pasta static que será salvo no banco de dados
-            # Supondo que a pasta 'uploads' está dentro de 'static'
-            imagem_path = os.path.join('uploads', filename)
+        # Validação básica
+        if not titulo or not descricao or not categoria or not tipo_servico:
+            flash("Preencha todos os campos obrigatórios!", "danger")
+            return redirect(url_for('servicos.cadastrar_servico'))
 
-        cursor = bd.cursor()
-        sql = """
-            INSERT INTO servicos 
-            (usuario_id, titulo, descricao, categoria, turnos, servicos_interesse, imagem)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
-        """
-        valores = (
-            session['usuario_id'], titulo, descricao, categoria,
-            turnos, servicos_interesse, imagem_path
-        )
-        cursor.execute(sql, valores)
-        bd.commit()
-        servico_id = cursor.lastrowid
-        cursor.close()
+        try:
+            cursor = bd.cursor()
+            sql = """
+                INSERT INTO servicos 
+                (usuario_id, titulo, descricao, categoria, turnos, tipo_servico)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """
+            valores = (
+                session['usuario_id'], titulo, descricao, categoria,
+                turnos, tipo_servico  # Já é 'oferece' ou 'busca'
+            )
+            cursor.execute(sql, valores)
+            bd.commit()
+            servico_id = cursor.lastrowid
+            cursor.close()
 
-        registrar_log(
-            session['usuario_id'], "servico", servico_id, 
-            "criado", f"Serviço '{titulo}' cadastrado."
-        )
-        flash("Serviço cadastrado com sucesso!", "success")
-        return redirect(url_for('servicos.meus_servicos'))
+            registrar_log(
+                session['usuario_id'], "servico", servico_id, 
+                "criado", f"Serviço '{titulo}' cadastrado."
+            )
+            flash("Serviço cadastrado com sucesso!", "success")
+            return redirect(url_for('servicos.meus_servicos'))
 
-    # Template localizado na subpasta 'user'
+        except Exception as e:
+            bd.rollback()
+            flash(f"Erro ao cadastrar serviço: {str(e)}", "danger")
+            return redirect(url_for('servicos.cadastrar_servico'))
+
+    # Renderiza o template (agora corrigido)
     return render_template('user/cadastrarServicos.html')
 
 
@@ -79,11 +72,14 @@ def meus_servicos():
         return redirect(url_for('auth.login'))
 
     cursor = bd.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM servicos WHERE usuario_id = %s", (session['usuario_id'],))
-    servicos_list = cursor.fetchall()
+    cursor.execute("""
+        SELECT * FROM servicos 
+        WHERE usuario_id = %s 
+        ORDER BY criado_em DESC
+    """, (session['usuario_id'],))
+    servicos = cursor.fetchall()
     cursor.close()
-
-    return render_template('user/meusServicos.html', servicos=servicos_list)
+    return render_template('user/meusServicos.html', servicos=servicos)   
 
 
 @servicos.route('/editar_servico/<int:id>', methods=['GET', 'POST'])
@@ -93,42 +89,54 @@ def editar_servico(id):
         return redirect(url_for('auth.login'))
 
     cursor = bd.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM servicos WHERE id = %s AND usuario_id = %s", (id, session['usuario_id']))
-    servico = cursor.fetchone()
-
-    if not servico:
-        flash("Serviço não encontrado ou não pertence a você.", "warning")
-        return redirect(url_for('servicos.meus_servicos'))
-
+    
     if request.method == 'POST':
-        titulo = request.form['titulo']
-        descricao = request.form['descricao']
-        categoria = request.form['categoria']
-        estado = request.form['estado']
-        cidade = request.form['cidade']
-        imagem = request.files.get('imagem')
-
-        imagem_path = servico['imagem']  # Mantém a imagem antiga se não for alterada
-        if imagem and imagem.filename != '':
-            upload_folder = current_app.config['UPLOAD_FOLDER']
-            if not os.path.exists(upload_folder):
-                os.makedirs(upload_folder)
-            imagem_path = os.path.join(upload_folder, imagem.filename)
-            imagem.save(imagem_path)
-
-        cursor.execute("""
-            UPDATE servicos 
-            SET titulo = %s, descricao = %s, categoria = %s, estado = %s, cidade = %s, imagem = %s, status = 'ativo'
-            WHERE id = %s AND usuario_id = %s
-        """, (titulo, descricao, categoria, estado, cidade, imagem_path, id, session['usuario_id']))
-        bd.commit()
-        cursor.close()
-
-        registrar_log(session['usuario_id'], "servico", id, "editado", f"Serviço '{titulo}' atualizado.")
-        
-        flash("Serviço atualizado com sucesso!", "success")
+        try:
+            # Coletar dados do formulário
+            titulo = request.form['titulo']
+            descricao = request.form['descricao']
+            categoria = request.form['categoria']
+            turnos = ",".join(request.form.getlist('turno'))
+            tipo_servico = request.form['tipo_servico']
+            
+            # Atualizar no banco de dados
+            cursor.execute("""
+                UPDATE servicos 
+                SET titulo = %s, 
+                    descricao = %s, 
+                    categoria = %s,
+                    turnos = %s,
+                    tipo_servico = %s,
+                    status = 'ativo'
+                WHERE id = %s AND usuario_id = %s
+            """, (titulo, descricao, categoria, turnos, tipo_servico, id, session['usuario_id']))
+            
+            bd.commit()
+            flash("Serviço atualizado com sucesso!", "success")
+            return redirect(url_for('servicos.meus_servicos'))
+            
+        except Exception as e:
+            bd.rollback()
+            flash(f"Erro ao atualizar serviço: {str(e)}", "danger")
+    
+    # GET: Carregar dados do serviço
+    cursor.execute("""
+        SELECT *, 
+               CASE WHEN turnos IS NULL THEN '' ELSE turnos END AS turnos_str
+        FROM servicos 
+        WHERE id = %s AND usuario_id = %s
+    """, (id, session['usuario_id']))
+    
+    servico = cursor.fetchone()
+    cursor.close()
+    
+    if not servico:
+        flash("Serviço não encontrado.", "danger")
         return redirect(url_for('servicos.meus_servicos'))
 
+    # Converter turnos para lista
+    servico['turnos_lista'] = servico['turnos_str'].split(',') if servico['turnos_str'] else []
+    
     return render_template('user/editarServicos.html', servico=servico)
 
 
@@ -139,13 +147,24 @@ def excluir_servico(id):
         flash("Você precisa estar logado para excluir um serviço.", "warning")
         return redirect(url_for('auth.login'))
 
-    cursor = bd.cursor()
-    cursor.execute("DELETE FROM servicos WHERE id = %s AND usuario_id = %s", (id, session['usuario_id']))
-    bd.commit()
-    cursor.close()
+    try:
+        cursor = bd.cursor()
+        # Verifica se o serviço pertence ao usuário antes de excluir
+        cursor.execute("SELECT id FROM servicos WHERE id = %s AND usuario_id = %s", 
+                      (id, session['usuario_id']))
+        if not cursor.fetchone():
+            flash("Serviço não encontrado ou não pertence a você.", "danger")
+            return redirect(url_for('servicos.meus_servicos'))
 
-    registrar_log(session['usuario_id'], "servico", id, "excluído", "Serviço excluído pelo usuário.")
-    flash("Serviço excluído com sucesso!", "success")
+        cursor.execute("DELETE FROM servicos WHERE id = %s", (id,))
+        bd.commit()
+        flash("Serviço excluído com sucesso!", "success")
+    except Exception as e:
+        bd.rollback()
+        flash(f"Erro ao excluir serviço: {str(e)}", "danger")
+    finally:
+        cursor.close()
+
     return redirect(url_for('servicos.meus_servicos'))
 
 

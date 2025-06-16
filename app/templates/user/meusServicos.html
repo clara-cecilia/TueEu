@@ -47,9 +47,20 @@
           <div class="card h-100">
             <div class="card-body">
               <h5 class="card-title">{{ servico.titulo }}</h5>
-              <p class="card-text">Categoria: {{ servico.categoria }}</p>
-              <p class="card-text">Status: {{ servico.status }}</p>
-            </div>
+              <p class="card-text">Categoria: {{ servico.categoria }}</p>           
+            <p class="card-text">Status: {% if servico.status == 'ativo' %}
+              <span class="badge bg-success">Ativo</span> 
+                {% else %}
+              <span class="badge bg-secondary">Inativo</span>
+            {% endif %}
+            </p>
+        <p class="card-text">Tipo: {% if servico.tipo_servico == 'oferece' %}
+          <span class="badge bg-primary">Ofereço</span>
+            {% else %}
+          <span class="badge bg-info">Busco</span>
+            {% endif %}
+        </p>
+      </div>
             <div class="card-footer">
               <div class="btn-group" role="group">
                 <!-- Link para Editar vai direcionar para a página específica de edição -->

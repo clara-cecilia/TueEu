@@ -19,5 +19,7 @@ def criar_app():
     app.register_blueprint(servicos_bp)
     app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(main_bp)
+   
+
 
     return app

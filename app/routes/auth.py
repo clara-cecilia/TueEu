@@ -102,7 +102,7 @@ def login():
 
 @auth.route('/logar', methods=['POST'])
 def logar():
-    email = request.form['email']
+    email = request.form['email'] 
     senha = request.form['senha']
 
     cursor = bd.cursor(dictionary=True)
@@ -295,60 +295,52 @@ def editar_dados():
         flash("Você precisa estar logado para editar seus dados.", "warning")
         return redirect(url_for('auth.login'))
 
-    user_id = session['usuario_id']
     cursor = bd.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM usuario WHERE id = %s", (user_id,))
+    cursor.execute("SELECT * FROM usuario WHERE id = %s", (session['usuario_id'],))
     usuario = cursor.fetchone()
-    cursor.close()
-
+    
     if request.method == 'POST':
-        novo_nome       = request.form.get('nome')
-        nova_data_nasc  = request.form.get('data_nasc')
-        novo_telefone   = request.form.get('telefone')
-        novo_sexo       = request.form.get('sexo')
-        novo_pais       = request.form.get('pais')
-        novo_estado     = request.form.get('estado')
-        nova_cidade     = request.form.get('cidade')
-        novo_cep        = request.form.get('cep')
-        novo_email      = request.form.get('email')
-        senha_fornecida = request.form.get('senha')
+        try:
+            # Coletar dados do formulário
+            novo_nome = request.form.get('nome')
+            nova_data_nasc = request.form.get('data_nasc')
+            novo_telefone = request.form.get('telefone')
+            novo_sexo = request.form.get('sexo')
+            novo_pais = request.form.get('pais')
+            novo_estado = request.form.get('estado')
+            nova_cidade = request.form.get('cidade')
+            novo_cep = request.form.get('cep')
+            novo_email = request.form.get('email')
+            senha_fornecida = request.form.get('senha')
 
-        if not senha_fornecida:
-            flash("Você precisa informar sua senha para confirmar as alterações.", "danger")
-            return redirect(url_for('auth.editar_dados'))
+            # Verificar senha
+            if not senha_fornecida or not bcrypt.checkpw(senha_fornecida.encode('utf-8'), usuario['senha'].encode('utf-8')):
+                flash("Senha incorreta ou não fornecida.", "danger")
+                return redirect(url_for('auth.editar_dados'))
 
-        if not bcrypt.checkpw(senha_fornecida.encode('utf-8'), usuario['senha'].encode('utf-8')):
-            flash("Senha incorreta. Por favor, tente novamente.", "danger")
-            return redirect(url_for('auth.editar_dados'))
-
-        email_verificado = usuario['email_verificado']
-        if novo_email != usuario['email']:
-            email_verificado = 0
-            session['usuario_email'] = novo_email
-            enviar_email_confirmacao(novo_email)
-
-        cursor = bd.cursor()
-        sql = """
-            UPDATE usuario
-            SET nome = %s, data_nasc = %s, telefone = %s, sexo = %s, pais = %s,
-                estado = %s, cidade = %s, cep = %s, email = %s, email_verificado = %s
-            WHERE id = %s
-        """
-        valores = (
-            novo_nome, nova_data_nasc, novo_telefone, novo_sexo, novo_pais,
-            novo_estado, nova_cidade, novo_cep, novo_email, email_verificado, user_id
-        )
-        cursor.execute(sql, valores)
-        bd.commit()
-        cursor.close()
-
-        registrar_log(user_id, "usuario", user_id, "editado", f"Usuário {novo_nome} editou seus dados.")
-        flash("Dados atualizados com sucesso!", "success")
-        if novo_email != usuario['email']:
-            flash("Um e-mail de validação foi enviado para o seu novo endereço. Por favor, confirme seu e-mail.", "warning")
-        return redirect(url_for('auth.home'))
+            # Atualizar no banco de dados
+            cursor.execute("""
+                UPDATE usuario 
+                SET nome = %s, data_nasc = %s, telefone = %s, sexo = %s, 
+                    pais = %s, estado = %s, cidade = %s, cep = %s, email = %s
+                WHERE id = %s
+            """, (
+                novo_nome, nova_data_nasc, novo_telefone, novo_sexo,
+                novo_pais, novo_estado, nova_cidade, novo_cep, novo_email,
+                session['usuario_id']
+            ))
+            bd.commit()
+            flash("Dados atualizados com sucesso!", "success")
+            return redirect(url_for('auth.home'))
+            
+        except Exception as e:
+            bd.rollback()
+            flash(f"Erro ao atualizar dados: {str(e)}", "danger")
+        finally:
+            cursor.close()
 
     return render_template('user/editarDados.html', usuario=usuario)
+
 @auth.route('/desativar_conta', methods=['POST'])
 def desativar_conta():
     if 'usuario_id' not in session:

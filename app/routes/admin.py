@@ -279,6 +279,7 @@ def editar_admin(id):
     return render_template('admin/editarAdmin.html', usuario=usuario, admin_info=admin_info)
 
 
+
 # =====================================================
 # Gerenciamento de Serviços
 # (Ambos admin normal e master podem visualizar, editar e desativar serviços)

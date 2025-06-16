@@ -4,12 +4,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Página do Usuário - Tu & Eu</title>
+  <title>Editar Serviço - Tu & Eu</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/logotueeu.png') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styleUsuario.css') }}">
-
 </head>
 
 <body>
@@ -43,84 +42,75 @@
   <main class="main">
     <div class="form-container">
       <h1>Editar Serviço</h1>
-      <form action="{{ url_for('servicos.editar_servico', id=servico.id) }}" method="POST"
-        enctype="multipart/form-data">
-
+      <form action="{{ url_for('servicos.editar_servico', id=servico.id) }}" method="POST">
         <input type="hidden" name="id" value="{{ servico.id }}">
 
-        <div class="form-group">
-          <label for="titulo">Título do Serviço:</label>
-          <input type="text" id="titulo" name="titulo" value="{{ servico.titulo }}" required>
-        </div>
-
-        <div class="form-group">
-          <label for="descricao">Descrição:</label>
-          <textarea id="descricao" name="descricao" required>{{ servico.descricao }}</textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="categoria">Categoria:</label>
-          <select name="categoria" id="categoria" required>
-            <option value="Estética" {% if servico.categoria=='Estética' %} selected {% endif %}>Estética</option>
-            <option value="Automotiva" {% if servico.categoria=='Automotiva' %} selected {% endif %}>Automotiva</option>
-            <option value="Limpeza Domiciliar" {% if servico.categoria=='Limpeza Domiciliar' %} selected {% endif %}>
-              Limpeza Domiciliar</option>
-            <option value="Mecânica" {% if servico.categoria=='Mecânica' %} selected {% endif %}>Mecânica</option>
-            <option value="Informática" {% if servico.categoria=='Informática' %} selected {% endif %}>Informática
-            </option>
-            <option value="Jardinagem" {% if servico.categoria=='Jardinagem' %} selected {% endif %}>Jardinagem</option>
-            <option value="Reformas / Manutenção" {% if servico.categoria=='Reformas / Manutenção' %} selected {% endif
-              %}>Reformas / Manutenção</option>
-            <option value="Educação" {% if servico.categoria=='Educação' %} selected {% endif %}>Educação</option>
-            <option value="Artes e Cultura" {% if servico.categoria=='Artes e Cultura' %} selected {% endif %}>Artes e
-              Cultura</option>
-            <option value="Eventos" {% if servico.categoria=='Eventos' %} selected {% endif %}>Eventos</option>
-            <option value="Transporte" {% if servico.categoria=='Transporte' %} selected {% endif %}>Transporte</option>
-            <option value="Saúde e Bem-estar" {% if servico.categoria=='Saúde e Bem-estar' %} selected {% endif %}>Saúde
-              e Bem-estar</option>
-            <option value="Consultoria" {% if servico.categoria=='Consultoria' %} selected {% endif %}>Consultoria
-            </option>
+        <div class="form-group mb-3">
+          <label for="tipo_servico" class="form-label">Tipo de Serviço:</label>
+          <select id="tipo_servico" name="tipo_servico" class="form-select" required>
+            <option value="oferece" {% if servico.tipo_servico=='oferece' %}selected{% endif %}>Estou oferecendo este serviço</option>
+            <option value="busca" {% if servico.tipo_servico=='busca' %}selected{% endif %}>Estou buscando este serviço</option>
           </select>
         </div>
 
-        <div class="form-group">
-          <label for="estado">Estado:</label>
-          <select name="estado" id="estado">
-            <option value="">Selecione...</option>
-            {% for estado in ["AC", "AL", "AP", "AM", "BA", "CE", "ES", "DF", "MA", "MT", "MS", "MG", "PA", "PB", "PR",
-            "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"] %}
-            <option value="{{ estado }}" {% if servico.estado==estado %} selected {% endif %}>{{ estado }}</option>
-            {% endfor %}
+        <div class="form-group mb-3">
+          <label for="titulo" class="form-label">Título do Serviço:</label>
+          <input type="text" id="titulo" name="titulo" class="form-control" value="{{ servico.titulo }}" required>
+        </div>
+
+        <div class="form-group mb-3">
+          <label for="descricao" class="form-label">Descrição:</label>
+          <textarea id="descricao" name="descricao" class="form-control" rows="4" required>{{ servico.descricao }}</textarea>
+        </div>
+
+        <div class="form-group mb-3">
+          <label for="categoria" class="form-label">Categoria:</label>
+          <select name="categoria" id="categoria" class="form-select" required>
+            <option value="Estética" {% if servico.categoria=='Estética' %}selected{% endif %}>Estética</option>
+            <option value="Automotiva" {% if servico.categoria=='Automotiva' %}selected{% endif %}>Automotiva</option>
+            <option value="Limpeza Domiciliar" {% if servico.categoria=='Limpeza Domiciliar' %}selected{% endif %}>Limpeza Domiciliar</option>
+            <option value="Mecânica" {% if servico.categoria=='Mecânica' %}selected{% endif %}>Mecânica</option>
+            <option value="Informática" {% if servico.categoria=='Informática' %}selected{% endif %}>Informática</option>
+            <option value="Jardinagem" {% if servico.categoria=='Jardinagem' %}selected{% endif %}>Jardinagem</option>
+            <option value="Reformas / Manutenção" {% if servico.categoria=='Reformas / Manutenção' %}selected{% endif %}>Reformas / Manutenção</option>
+            <option value="Educação" {% if servico.categoria=='Educação' %}selected{% endif %}>Educação</option>
+            <option value="Artes e Cultura" {% if servico.categoria=='Artes e Cultura' %}selected{% endif %}>Artes e Cultura</option>
+            <option value="Eventos" {% if servico.categoria=='Eventos' %}selected{% endif %}>Eventos</option>
+            <option value="Transporte" {% if servico.categoria=='Transporte' %}selected{% endif %}>Transporte</option>
+            <option value="Saúde e Bem-estar" {% if servico.categoria=='Saúde e Bem-estar' %}selected{% endif %}>Saúde e Bem-estar</option>
+            <option value="Consultoria" {% if servico.categoria=='Consultoria' %}selected{% endif %}>Consultoria</option>
           </select>
         </div>
 
-        <div class="form-group">
-          <label for="cidade">Cidade:</label>
-          <input type="text" id="cidade" name="cidade" value="{{ servico.cidade }}" required>
+<div class="form-group mb-3">
+  <label class="form-label">Disponibilidade:</label>
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" name="turno" value="manha" id="turno_manha" 
+      {% if 'manha' in servico.turnos_lista %}checked{% endif %}>
+    <label class="form-check-label" for="turno_manha">Manhã</label>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" name="turno" value="tarde" id="turno_tarde"
+      {% if 'tarde' in servico.turnos_lista %}checked{% endif %}>
+    <label class="form-check-label" for="turno_tarde">Tarde</label>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" name="turno" value="noite" id="turno_noite"
+      {% if 'noite' in servico.turnos_lista %}checked{% endif %}>
+    <label class="form-check-label" for="turno_noite">Noite</label>
+  </div>
+</div>
+
+        <div class="form-group d-grid gap-2 d-md-flex justify-content-md-end">
+          <a href="{{ url_for('servicos.meus_servicos') }}" class="btn btn-secondary me-md-2">Cancelar</a>
+          <button type="submit" class="btn btn-primary">Salvar Alterações</button><br>
         </div>
-
-        <div class="form-group">
-          <label for="imagem">Imagem (opcional):</label>
-          <input type="file" id="imagem" name="imagem" accept="image/*">
-          {% if servico.imagem %}
-          <p>Imagem atual: <img src="{{ url_for('static', filename=servico.imagem) }}" alt="Imagem do serviço"
-              style="max-width: 100px;"></p>
-          {% else %}
-          <p>Nenhuma imagem cadastrada.</p>
-          {% endif %}
-
-        </div>
-
-        <div class="form-group">
-          <button type="submit" class="btn btn-success">Salvar Alterações e Ativar Serviço</button>
-          <a href="{{ url_for('servicos.meus_servicos') }}" class="btn btn-secondary">Cancelar</a>
-        </div>
-
+            <p style="text-align: right;">Ao clicar em "Salvar Alterações" irá ativar o serviço</p>
       </form>
     </div>
   </main>
 
-  <!-- Rodapé customizado -->
+  <!-- Rodapé -->
   <footer class="custom-footer pt-4 my-md-5 pt-md-5 border-top">
     <div class="container">
       <div class="row">
@@ -131,11 +121,28 @@
       </div>
     </div>
   </footer>
-  <!-- Script do Bootstrap (verifique se o hash de integridade está correto) -->
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
     crossorigin="anonymous"></script>
-
+  
+  <script>
+  // Atualiza o título quando o tipo de serviço é alterado
+  document.addEventListener('DOMContentLoaded', function() {
+    const tipoServicoSelect = document.getElementById('tipo_servico');
+    const tituloH1 = document.querySelector('h1');
+    
+    function updateTitle() {
+      if (tipoServicoSelect.value === 'oferece') {
+        tituloH1.textContent = 'Editar Serviço que Ofereço';
+      } else {
+        tituloH1.textContent = 'Editar Serviço que Busco';
+      }
+    }
+    
+    tipoServicoSelect.addEventListener('change', updateTitle);
+    updateTitle(); // Executa no carregamento para definir o título inicial
+  });
+  </script>
 </body>
-
 </html>

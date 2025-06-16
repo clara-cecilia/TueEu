@@ -1,3 +1,4 @@
+-- Criar schema se não existir
 CREATE SCHEMA IF NOT EXISTS `cadastro_tueEu`;
 USE `cadastro_tueEu`;
 
@@ -29,48 +30,28 @@ CREATE TABLE administrador (
     FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Tabela de Serviços (incluindo ativação/desativação)
+-- Tabela de Serviços (com tipo_servico e sem cidade/estado)
 CREATE TABLE servicos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
     titulo VARCHAR(255) NOT NULL,
     descricao TEXT NOT NULL,
-    categoria ENUM(
-        'Estética', 'Automotiva', 'Limpeza Domiciliar', 'Mecânica', 'Informática',
-        'Jardinagem', 'Reformas / Manutenção', 'Educação', 'Artes e Cultura',
-        'Eventos', 'Transporte', 'Saúde e Bem-estar', 'Consultoria'
-    ) NOT NULL,
-    estado CHAR(2) NOT NULL,
-    cidade VARCHAR(50) NOT NULL,
-    turnos SET('Manhã', 'Tarde', 'Noite'),
-    servicos_interesse SET(
-        'Estética', 'Automotiva', 'Limpeza Domiciliar', 'Mecânica', 'Informática',
-        'Jardinagem', 'Reformas / Manutenção', 'Educação', 'Artes e Cultura',
-        'Eventos', 'Transporte', 'Saúde e Bem-estar', 'Consultoria'
-    ),
-    imagem VARCHAR(255),
-    status ENUM('ativo', 'inativo') DEFAULT 'ativo', -- Permite ativação/desativação
+    categoria VARCHAR(100) NOT NULL,
+    turnos VARCHAR(100), -- armazenar 'Manhã,Tarde' por exemplo
+    tipo_servico ENUM('oferece', 'busca') NOT NULL DEFAULT 'oferece', -- novo campo
+    status ENUM('ativo', 'inativo') DEFAULT 'ativo',
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Tabela de Logs (registro de ações administrativas)
--- Tabela de Logs (registro de ações administrativas)
 CREATE TABLE logs (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT DEFAULT NULL, -- Quem fez a ação (permite NULL)
-    entidade ENUM('usuario', 'administrador', 'servico') NOT NULL, -- Tipo de entidade alterada
+    entidade ENUM('usuario', 'administrador', 'servico') NOT NULL,
     entidade_id INT NOT NULL, -- ID da entidade afetada
-    acao ENUM('criado', 'editado', 'ativado', 'desativado', 'excluído','login','email confirmado') NOT NULL,
-    detalhes TEXT DEFAULT NULL, -- Possíveis detalhes adicionais
+    acao ENUM('criado', 'editado', 'ativado', 'desativado', 'excluído', 'login', 'email confirmado') NOT NULL,
+    detalhes TEXT DEFAULT NULL,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-ALTER TABLE servicos
-DROP COLUMN cidade,
-DROP COLUMN estado;
-
-ALTER TABLE servicos
-MODIFY categoria VARCHAR(100) NOT NULL,
-MODIFY servicos_interesse VARCHAR(100) NOT NULL;;
